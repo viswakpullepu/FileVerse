@@ -216,25 +216,6 @@ a {
   gap: 1rem;
 }
 
-.login {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.btn-signup {
-  background-color: var(--primary);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: background 0.2s;
-}
-
-.btn-signup:hover {
-  background-color: #d12d28;
-}
-
 .btn-grid {
   background: none;
   border: none;
@@ -466,10 +447,6 @@ a {
   .mega-column {
     max-width: 100%;
     margin-bottom: 1.5rem;
-  }
-
-  .header-right .login {
-    display: none;
   }
   
   /* Mobile adjustments for dashboard base classes */
