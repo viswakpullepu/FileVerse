@@ -20,9 +20,9 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: '/favicon.ico',
-            sizes: '64x64',
-            type: 'image/x-icon'
+            src: '/favicon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml'
           }
         ]
       }
