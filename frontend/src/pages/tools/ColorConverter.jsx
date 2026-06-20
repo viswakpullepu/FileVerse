@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function ColorConverter() {
-  const [color, setColor] = useState('#e5322d'); // Default Fileverse Red
+  const [color, setColor] = useState('#e5322d'); // Default fileverze Red
   const [rgb, setRgb] = useState('');
   const [hsl, setHsl] = useState('');
 

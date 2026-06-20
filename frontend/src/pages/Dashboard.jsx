@@ -24,17 +24,11 @@ const pdfTools = [
   { path: '/add_watermark', title: 'Add watermark', desc: 'Stamp an image or text over your PDF in seconds. Choose the typography, transparency and position.', icon: Droplets, color: '#e5322d' },
   { path: '/image_to_pdf', title: 'Image to PDF', desc: 'Convert JPG, PNG, and more to PDF in seconds. Easily adjust orientation and margins.', icon: ImagePlus, color: '#f7c324' },
   { path: '/pdf_to_image', title: 'PDF to Image', desc: 'Convert every page of a PDF document into a high-quality JPG image instantly.', icon: ImageIcon, color: '#f7c324' },
-  { path: '/word_to_pdf', title: 'Word to PDF', desc: 'Convert your DOC and DOCX files securely into PDF format.', icon: FileText, color: '#315ea5' },
-  { path: '/pdf_to_word', title: 'PDF to Word', desc: 'Convert your PDF files to editable Word documents.', icon: FileText, color: '#315ea5' },
-  { path: '/excel_to_pdf', title: 'Excel to PDF', desc: 'Convert your spreadsheets (.xls, .xlsx) securely into PDF format.', icon: FileText, color: '#2a7433' },
-  { path: '/powerpoint_to_pdf', title: 'PowerPoint to PDF', desc: 'Convert your presentations (.ppt, .pptx) securely into PDF format.', icon: FileText, color: '#d32f2f' },
-  { path: '/compress_pdf', title: 'Compress PDF', desc: 'Reduce the file size of your PDF document securely.', icon: Maximize, color: '#e5322d' },
   { path: '/unlock_pdf', title: 'Unlock PDF', desc: 'Remove PDF password security, giving you the freedom to use your PDFs as you want.', icon: ShieldOff, color: '#e5322d' },
   { path: '/protect_pdf', title: 'Protect PDF', desc: 'Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.', icon: Shield, color: '#e5322d' },
 ];
 
 const imageTools = [
-  { path: '/remove_background', title: 'Remove Background', desc: 'Use a local AI model to magically remove the background from images instantly.', icon: Wand2, color: '#9333ea' },
   { path: '/compress_image', title: 'Compress Image', desc: 'Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.', icon: Maximize, color: '#f7c324' },
   { path: '/resize_image', title: 'Resize Image', desc: 'Define your dimensions, by percent or pixel, and resize your JPG, PNG, and GIF images.', icon: Maximize, color: '#f7c324' },
   { path: '/convert_image', title: 'Convert Image', desc: 'Convert PNG to JPG, JPG to PNG, or to WEBP for the web.', icon: Replace, color: '#f7c324' },
@@ -87,7 +81,7 @@ export default function Dashboard() {
       <div className="hero" style={{ padding: '4rem 2rem' }}>
         <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Every tool you could need in one place</h1>
         <p style={{ maxWidth: '900px', margin: '0 auto', fontSize: '1.2rem', color: '#555' }}>
-          Fileverse is a powerhouse. All our tools are completely free and run natively in your browser.
+          fileverze is a powerhouse. All our tools are completely free and run natively in your browser.
           Select any tool below to begin.
         </p>
       </div>
@@ -254,10 +248,18 @@ export default function Dashboard() {
       
       {/* Footer / Coming Soon Section */}
       <div style={{ backgroundColor: '#f9f9f9', padding: '4rem 2rem', marginTop: '4rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>More tools coming soon!</h2>
-        <p style={{ color: '#666', maxWidth: '600px', margin: '0 auto' }}>
-          We're constantly adding new tools. Stay tuned for AI Generative Tools, 3D Object Conversion, Excel to PDF, and much more.
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Backend Desktop Tools (Coming Soon to Web)</h2>
+        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', marginBottom: '2rem' }}>
+          The following heavy-duty AI and conversion tools are currently only available when running fileverze locally on your computer via Python, and will be ported to the web soon:
         </p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', maxWidth: '900px', margin: '0 auto' }}>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Word to PDF</span>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>PDF to Word</span>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Excel to PDF</span>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>PowerPoint to PDF</span>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Compress PDF</span>
+          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>AI Background Removal</span>
+        </div>
       </div>
     </div>
   );

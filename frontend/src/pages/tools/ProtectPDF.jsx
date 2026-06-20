@@ -137,7 +137,7 @@ export default function ProtectPDF() {
       )}
       
       <div style={{ marginTop: '3rem' }}>
-        <Link to="/" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>&larr; Back to Fileverse Dashboard</Link>
+        <Link to="/" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>&larr; Back to fileverze Dashboard</Link>
       </div>
     </div>
   );

@@ -89,7 +89,7 @@ function App() {
               <path d="M2 17L12 22L22 17" stroke="#e5322d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M2 12L12 17L22 12" stroke="#e5322d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            FILEVERSE
+            FILEVERZE
           </Link>
           
           <nav className="nav-main">
@@ -98,10 +98,9 @@ function App() {
               DOCUMENT TOOLS <ChevronDown size={14} />
               {activeDropdown === 'docs' && (
                 <div className="dropdown-menu">
-                  <Link to="/word_to_pdf" className="dropdown-item" onClick={closeDropdown}>Word to PDF</Link>
-                  <Link to="/pdf_to_word" className="dropdown-item" onClick={closeDropdown}>PDF to Word</Link>
-                  <Link to="/excel_to_pdf" className="dropdown-item" onClick={closeDropdown}>Excel to PDF</Link>
-                  <Link to="/powerpoint_to_pdf" className="dropdown-item" onClick={closeDropdown}>PowerPoint to PDF</Link>
+                  <Link to="/merge_pdf" className="dropdown-item" onClick={closeDropdown}>Merge PDF</Link>
+                  <Link to="/split_pdf" className="dropdown-item" onClick={closeDropdown}>Split PDF</Link>
+                  <Link to="/image_to_pdf" className="dropdown-item" onClick={closeDropdown}>Image to PDF</Link>
                 </div>
               )}
             </div>
@@ -174,9 +173,6 @@ function App() {
                   <div className="mega-column">
                     <div className="mega-column-title">CONVERT TO PDF</div>
                     <Link to="/image_to_pdf" className="mega-item" onClick={closeDropdown}>JPG to PDF</Link>
-                    <Link to="/word_to_pdf" className="mega-item" onClick={closeDropdown}>WORD to PDF</Link>
-                    <Link to="/powerpoint_to_pdf" className="mega-item" onClick={closeDropdown}>POWERPOINT to PDF</Link>
-                    <Link to="/excel_to_pdf" className="mega-item" onClick={closeDropdown}>EXCEL to PDF</Link>
                     <Link to="/convert/pdf" className="mega-item" onClick={closeDropdown}>HTML to PDF</Link>
                   </div>
                   <div className="mega-column">
@@ -189,7 +185,6 @@ function App() {
                   </div>
                   <div className="mega-column">
                     <div className="mega-column-title">EDIT IMAGE</div>
-                    <Link to="/remove_background" className="mega-item" onClick={closeDropdown}>Remove Background</Link>
                     <Link to="/rotate_image" className="mega-item" onClick={closeDropdown}>Rotate Image</Link>
                     <Link to="/image_blur" className="mega-item" onClick={closeDropdown}>Image Blur</Link>
                     <Link to="/grayscale_image" className="mega-item" onClick={closeDropdown}>Grayscale Image</Link>
