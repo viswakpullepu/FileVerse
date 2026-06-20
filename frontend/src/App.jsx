@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { ChevronDown, Grid } from 'lucide-react';
+import { ChevronDown, Grid, Menu, X } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
 import MergePDF from './pages/tools/MergePDF';
@@ -61,10 +61,14 @@ import XmlToJson from './pages/tools/XmlToJson';
 
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const headerRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
+    // Close mobile menu on route change
+    setIsMobileMenuOpen(false);
+    
     // Track recently visited tools
     if (location.pathname !== '/' && !location.pathname.startsWith('/convert/')) {
       try {
@@ -99,6 +103,10 @@ function App() {
     <div className="app-container">
       <header className="header" ref={headerRef}>
         <div className="header-left">
+          <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {isMobileMenuOpen ? <X size={24} color="#111" /> : <Menu size={24} color="#111" />}
+          </button>
+          
           <Link to="/" className="logo" onClick={closeDropdown}>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="#e5322d" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="#e5322d" opacity="0.8"/>
@@ -108,7 +116,7 @@ function App() {
             FILEVERZE
           </Link>
           
-          <nav className="nav-main">
+          <nav className={`nav-main ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
             {/* DOCUMENT TOOLS */}
             <div className="nav-item dropdown" onClick={() => toggleDropdown('docs')}>
               DOCUMENT TOOLS <ChevronDown size={14} />

@@ -97,34 +97,35 @@ export default function Dashboard() {
   const [isReturningUser, setIsReturningUser] = useState(false);
 
   useEffect(() => {
+    // Check local storage for user history
     try {
-      const visited = localStorage.getItem('hasVisited') === 'true';
-      setIsReturningUser(visited);
-      
-      const recentPaths = JSON.parse(localStorage.getItem('recentTools') || '[]');
-      if (recentPaths.length > 0) {
-        const recent = recentPaths.map(path => allTools.find(t => t.path === path)).filter(Boolean);
-        setRecentTools(recent);
+      const history = JSON.parse(localStorage.getItem('recentTools') || '[]');
+      if (history.length > 0) {
+        setIsReturningUser(true);
+        // Map paths back to full tool objects
+        const resolvedTools = history.map(path => {
+          return allTools.find(t => t.path === path);
+        }).filter(Boolean).slice(0, 4); // Show top 4
+        setRecentTools(resolvedTools);
       }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to load recent tools', e);
     }
 
-    // Simulate skeleton loading for a premium feel
+    // Simulate short network fetch for skeletal loading
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 800);
-
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <div>
-      <div className="hero" style={{ padding: '4rem 2rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+    <div className="dashboard-container">
+      <div className="hero dashboard-hero">
+        <h1 className="hero-title">
           {isReturningUser ? 'Welcome back to fileverze' : 'Every tool you could need in one place'}
         </h1>
-        <p style={{ maxWidth: '900px', margin: '0 auto', fontSize: '1.2rem', color: '#555' }}>
+        <p className="hero-subtitle">
           {isReturningUser 
             ? 'Jump right back into your favorite tools or discover something new. All processing stays securely in your browser.'
             : 'fileverze is a powerhouse. All our tools are completely free and run natively in your browser. Select any tool below to begin.'}
@@ -134,23 +135,23 @@ export default function Dashboard() {
       {/* RECENTLY USED SECTION */}
       {!isLoading && recentTools.length > 0 && (
         <>
-          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-            <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Clock size={24} color="#555" /> Recently Used
+          <div className="section-header">
+            <h2 className="section-title">
+              <Clock size={24} className="section-icon" /> Recently Used
             </h2>
           </div>
-          <div className="tools-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', padding: '0 2rem 4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
+          <div className="tools-grid">
             {recentTools.map((tool, index) => {
               const Icon = tool.icon;
               return (
-                <Link to={tool.path} key={`recent-${index}`} className="tool-card" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '1.5rem', height: '100%', display: 'flex', border: '1px solid #eaeaea', borderRadius: '8px', textDecoration: 'none', color: 'inherit', transition: 'all 0.2s ease', backgroundColor: '#fff' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                    <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                <Link to={tool.path} key={`recent-${index}`} className="tool-card fade-in">
+                  <div className="tool-card-header">
+                    <div className="tool-icon-wrapper" style={{ color: tool.color }}>
                       <Icon size={32} strokeWidth={1.5} />
                     </div>
-                    <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                    <h3 className="tool-title">{tool.title}</h3>
                   </div>
-                  <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                  <p className="tool-desc">{tool.desc}</p>
                 </Link>
               );
             })}
@@ -159,43 +160,24 @@ export default function Dashboard() {
       )}
 
       {/* PDF TOOLS SECTION */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-        <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>PDF Tools</h2>
+      <div className="section-header">
+        <h2 className="section-title">PDF Tools</h2>
       </div>
-      <div className="tools-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '1.5rem', 
-        padding: '0 2rem 4rem 2rem', 
-        maxWidth: '1400px', 
-        margin: '0 auto' 
-      }}>
+      <div className="tools-grid">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           pdfTools.map((tool, index) => {
             const Icon = tool.icon;
             return (
-              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
-                flexDirection: 'column', 
-                alignItems: 'flex-start', 
-                padding: '1.5rem',
-                height: '100%',
-                display: 'flex',
-                border: '1px solid #eaeaea',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'all 0.2s ease',
-                backgroundColor: '#fff'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+              <Link to={tool.path} key={index} className="tool-card fade-in">
+                <div className="tool-card-header">
+                  <div className="tool-icon-wrapper" style={{ color: tool.color }}>
                     <Icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                  <h3 className="tool-title">{tool.title}</h3>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                <p className="tool-desc">{tool.desc}</p>
               </Link>
             );
           })
@@ -203,43 +185,24 @@ export default function Dashboard() {
       </div>
 
       {/* IMAGE TOOLS SECTION */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-        <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Image Tools</h2>
+      <div className="section-header">
+        <h2 className="section-title">Image Tools</h2>
       </div>
-      <div className="tools-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '1.5rem', 
-        padding: '0 2rem 4rem 2rem', 
-        maxWidth: '1400px', 
-        margin: '0 auto' 
-      }}>
+      <div className="tools-grid">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           imageTools.map((tool, index) => {
             const Icon = tool.icon;
             return (
-              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
-                flexDirection: 'column', 
-                alignItems: 'flex-start', 
-                padding: '1.5rem',
-                height: '100%',
-                display: 'flex',
-                border: '1px solid #eaeaea',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'all 0.2s ease',
-                backgroundColor: '#fff'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+              <Link to={tool.path} key={index} className="tool-card fade-in">
+                <div className="tool-card-header">
+                  <div className="tool-icon-wrapper" style={{ color: tool.color }}>
                     <Icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                  <h3 className="tool-title">{tool.title}</h3>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                <p className="tool-desc">{tool.desc}</p>
               </Link>
             );
           })
@@ -247,43 +210,24 @@ export default function Dashboard() {
       </div>
 
       {/* VIDEO TOOLS SECTION */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-        <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Video Tools</h2>
+      <div className="section-header">
+        <h2 className="section-title">Video Tools</h2>
       </div>
-      <div className="tools-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '1.5rem', 
-        padding: '0 2rem 4rem 2rem', 
-        maxWidth: '1400px', 
-        margin: '0 auto' 
-      }}>
+      <div className="tools-grid">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           videoTools.map((tool, index) => {
             const Icon = tool.icon;
             return (
-              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
-                flexDirection: 'column', 
-                alignItems: 'flex-start', 
-                padding: '1.5rem',
-                height: '100%',
-                display: 'flex',
-                border: '1px solid #eaeaea',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'all 0.2s ease',
-                backgroundColor: '#fff'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+              <Link to={tool.path} key={index} className="tool-card fade-in">
+                <div className="tool-card-header">
+                  <div className="tool-icon-wrapper" style={{ color: tool.color }}>
                     <Icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                  <h3 className="tool-title">{tool.title}</h3>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                <p className="tool-desc">{tool.desc}</p>
               </Link>
             );
           })
@@ -291,43 +235,24 @@ export default function Dashboard() {
       </div>
 
       {/* DEV TOOLS SECTION */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
-        <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Data & Dev Tools</h2>
+      <div className="section-header">
+        <h2 className="section-title">Data & Dev Tools</h2>
       </div>
-      <div className="tools-grid" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-        gap: '1.5rem', 
-        padding: '0 2rem 4rem 2rem', 
-        maxWidth: '1400px', 
-        margin: '0 auto' 
-      }}>
+      <div className="tools-grid">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : (
           devTools.map((tool, index) => {
             const Icon = tool.icon;
             return (
-              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
-                flexDirection: 'column', 
-                alignItems: 'flex-start', 
-                padding: '1.5rem',
-                height: '100%',
-                display: 'flex',
-                border: '1px solid #eaeaea',
-                borderRadius: '8px',
-                textDecoration: 'none',
-                color: 'inherit',
-                transition: 'all 0.2s ease',
-                backgroundColor: '#fff'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+              <Link to={tool.path} key={index} className="tool-card fade-in">
+                <div className="tool-card-header">
+                  <div className="tool-icon-wrapper" style={{ color: tool.color }}>
                     <Icon size={32} strokeWidth={1.5} />
                   </div>
-                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                  <h3 className="tool-title">{tool.title}</h3>
                 </div>
-                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                <p className="tool-desc">{tool.desc}</p>
               </Link>
             );
           })
@@ -335,18 +260,18 @@ export default function Dashboard() {
       </div>
       
       {/* Footer / Coming Soon Section */}
-      <div style={{ backgroundColor: '#f9f9f9', padding: '4rem 2rem', marginTop: '4rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Backend Desktop Tools (Coming Soon to Web)</h2>
-        <p style={{ color: '#666', maxWidth: '700px', margin: '0 auto', marginBottom: '2rem' }}>
+      <div className="coming-soon-section">
+        <h2 className="coming-soon-title">Backend Desktop Tools (Coming Soon to Web)</h2>
+        <p className="coming-soon-desc">
           The following heavy-duty AI and conversion tools are currently only available when running fileverze locally on your computer via Python, and will be ported to the web soon:
         </p>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem', maxWidth: '900px', margin: '0 auto' }}>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Word to PDF</span>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>PDF to Word</span>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Excel to PDF</span>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>PowerPoint to PDF</span>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>Compress PDF</span>
-          <span style={{ padding: '0.5rem 1rem', backgroundColor: '#eaeaea', borderRadius: '20px', fontSize: '0.9rem', fontWeight: 'bold', color: '#555' }}>AI Background Removal</span>
+        <div className="coming-soon-tags">
+          <span className="coming-soon-tag">Word to PDF</span>
+          <span className="coming-soon-tag">PDF to Word</span>
+          <span className="coming-soon-tag">Excel to PDF</span>
+          <span className="coming-soon-tag">PowerPoint to PDF</span>
+          <span className="coming-soon-tag">Compress PDF</span>
+          <span className="coming-soon-tag">AI Background Removal</span>
         </div>
       </div>
     </div>
