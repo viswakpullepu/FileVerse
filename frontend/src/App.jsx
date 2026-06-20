@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
@@ -62,6 +62,22 @@ import XmlToJson from './pages/tools/XmlToJson';
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const headerRef = useRef(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track recently visited tools
+    if (location.pathname !== '/' && !location.pathname.startsWith('/convert/')) {
+      try {
+        const recent = JSON.parse(localStorage.getItem('recentTools') || '[]');
+        // Add new path, remove duplicates, keep top 4
+        const updated = [location.pathname, ...recent.filter(p => p !== location.pathname)].slice(0, 4);
+        localStorage.setItem('recentTools', JSON.stringify(updated));
+        localStorage.setItem('hasVisited', 'true');
+      } catch (e) {
+        console.error('Local storage error:', e);
+      }
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

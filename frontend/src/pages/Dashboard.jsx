@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Clock } from 'lucide-react';
 import { 
   FileText, Image as ImageIcon, Video, Music, 
   Database, Code, Archive, Box, BookOpen, 
@@ -75,16 +76,87 @@ const devTools = [
   { path: '/css_formatter', title: 'CSS Formatter & Minifier', desc: 'Organize CSS stylesheets or crunch them down for production.', icon: Code, color: '#333333' }
 ];
 
+const allTools = [...pdfTools, ...imageTools, ...videoTools, ...devTools];
+
+const SkeletonCard = () => (
+  <div className="tool-card skeleton" style={{
+    padding: '1.5rem', height: '140px', border: '1px solid #eaeaea', borderRadius: '8px', backgroundColor: '#f9f9f9', display: 'flex', flexDirection: 'column'
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+      <div className="skeleton-icon" style={{ width: '32px', height: '32px', borderRadius: '4px', backgroundColor: '#e0e0e0', marginRight: '1rem' }}></div>
+      <div className="skeleton-title" style={{ height: '20px', width: '60%', backgroundColor: '#e0e0e0', borderRadius: '4px' }}></div>
+    </div>
+    <div className="skeleton-text" style={{ height: '14px', width: '100%', backgroundColor: '#e0e0e0', borderRadius: '4px', marginBottom: '0.5rem' }}></div>
+    <div className="skeleton-text" style={{ height: '14px', width: '80%', backgroundColor: '#e0e0e0', borderRadius: '4px' }}></div>
+  </div>
+);
+
 export default function Dashboard() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [recentTools, setRecentTools] = useState([]);
+  const [isReturningUser, setIsReturningUser] = useState(false);
+
+  useEffect(() => {
+    try {
+      const visited = localStorage.getItem('hasVisited') === 'true';
+      setIsReturningUser(visited);
+      
+      const recentPaths = JSON.parse(localStorage.getItem('recentTools') || '[]');
+      if (recentPaths.length > 0) {
+        const recent = recentPaths.map(path => allTools.find(t => t.path === path)).filter(Boolean);
+        setRecentTools(recent);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    // Simulate skeleton loading for a premium feel
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div>
       <div className="hero" style={{ padding: '4rem 2rem' }}>
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Every tool you could need in one place</h1>
+        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>
+          {isReturningUser ? 'Welcome back to fileverze' : 'Every tool you could need in one place'}
+        </h1>
         <p style={{ maxWidth: '900px', margin: '0 auto', fontSize: '1.2rem', color: '#555' }}>
-          fileverze is a powerhouse. All our tools are completely free and run natively in your browser.
-          Select any tool below to begin.
+          {isReturningUser 
+            ? 'Jump right back into your favorite tools or discover something new. All processing stays securely in your browser.'
+            : 'fileverze is a powerhouse. All our tools are completely free and run natively in your browser. Select any tool below to begin.'}
         </p>
       </div>
+
+      {/* RECENTLY USED SECTION */}
+      {!isLoading && recentTools.length > 0 && (
+        <>
+          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
+            <h2 style={{ fontSize: '1.8rem', color: '#333', borderBottom: '2px solid #eaeaea', paddingBottom: '0.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Clock size={24} color="#555" /> Recently Used
+            </h2>
+          </div>
+          <div className="tools-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', padding: '0 2rem 4rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
+            {recentTools.map((tool, index) => {
+              const Icon = tool.icon;
+              return (
+                <Link to={tool.path} key={`recent-${index}`} className="tool-card" style={{ flexDirection: 'column', alignItems: 'flex-start', padding: '1.5rem', height: '100%', display: 'flex', border: '1px solid #eaeaea', borderRadius: '8px', textDecoration: 'none', color: 'inherit', transition: 'all 0.2s ease', backgroundColor: '#fff' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
+                    <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                      <Icon size={32} strokeWidth={1.5} />
+                    </div>
+                    <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+                </Link>
+              );
+            })}
+          </div>
+        </>
+      )}
 
       {/* PDF TOOLS SECTION */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
@@ -98,32 +170,36 @@ export default function Dashboard() {
         maxWidth: '1400px', 
         margin: '0 auto' 
       }}>
-        {pdfTools.map((tool, index) => {
-          const Icon = tool.icon;
-          return (
-            <Link to={tool.path} key={index} className="tool-card" style={{ 
-              flexDirection: 'column', 
-              alignItems: 'flex-start', 
-              padding: '1.5rem',
-              height: '100%',
-              display: 'flex',
-              border: '1px solid #eaeaea',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              color: 'inherit',
-              transition: 'all 0.2s ease',
-              backgroundColor: '#fff'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
-                  <Icon size={32} strokeWidth={1.5} />
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          pdfTools.map((tool, index) => {
+            const Icon = tool.icon;
+            return (
+              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
+                flexDirection: 'column', 
+                alignItems: 'flex-start', 
+                padding: '1.5rem',
+                height: '100%',
+                display: 'flex',
+                border: '1px solid #eaeaea',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'all 0.2s ease',
+                backgroundColor: '#fff'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
+                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
                 </div>
-                <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
-            </Link>
-          );
-        })}
+                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+              </Link>
+            );
+          })
+        )}
       </div>
 
       {/* IMAGE TOOLS SECTION */}
@@ -138,32 +214,36 @@ export default function Dashboard() {
         maxWidth: '1400px', 
         margin: '0 auto' 
       }}>
-        {imageTools.map((tool, index) => {
-          const Icon = tool.icon;
-          return (
-            <Link to={tool.path} key={index} className="tool-card" style={{ 
-              flexDirection: 'column', 
-              alignItems: 'flex-start', 
-              padding: '1.5rem',
-              height: '100%',
-              display: 'flex',
-              border: '1px solid #eaeaea',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              color: 'inherit',
-              transition: 'all 0.2s ease',
-              backgroundColor: '#fff'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
-                  <Icon size={32} strokeWidth={1.5} />
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          imageTools.map((tool, index) => {
+            const Icon = tool.icon;
+            return (
+              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
+                flexDirection: 'column', 
+                alignItems: 'flex-start', 
+                padding: '1.5rem',
+                height: '100%',
+                display: 'flex',
+                border: '1px solid #eaeaea',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'all 0.2s ease',
+                backgroundColor: '#fff'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
+                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
                 </div>
-                <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
-            </Link>
-          );
-        })}
+                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+              </Link>
+            );
+          })
+        )}
       </div>
 
       {/* VIDEO TOOLS SECTION */}
@@ -178,32 +258,36 @@ export default function Dashboard() {
         maxWidth: '1400px', 
         margin: '0 auto' 
       }}>
-        {videoTools.map((tool, index) => {
-          const Icon = tool.icon;
-          return (
-            <Link to={tool.path} key={index} className="tool-card" style={{ 
-              flexDirection: 'column', 
-              alignItems: 'flex-start', 
-              padding: '1.5rem',
-              height: '100%',
-              display: 'flex',
-              border: '1px solid #eaeaea',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              color: 'inherit',
-              transition: 'all 0.2s ease',
-              backgroundColor: '#fff'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
-                  <Icon size={32} strokeWidth={1.5} />
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          videoTools.map((tool, index) => {
+            const Icon = tool.icon;
+            return (
+              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
+                flexDirection: 'column', 
+                alignItems: 'flex-start', 
+                padding: '1.5rem',
+                height: '100%',
+                display: 'flex',
+                border: '1px solid #eaeaea',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'all 0.2s ease',
+                backgroundColor: '#fff'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
+                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
                 </div>
-                <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
-            </Link>
-          );
-        })}
+                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+              </Link>
+            );
+          })
+        )}
       </div>
 
       {/* DEV TOOLS SECTION */}
@@ -218,32 +302,36 @@ export default function Dashboard() {
         maxWidth: '1400px', 
         margin: '0 auto' 
       }}>
-        {devTools.map((tool, index) => {
-          const Icon = tool.icon;
-          return (
-            <Link to={tool.path} key={index} className="tool-card" style={{ 
-              flexDirection: 'column', 
-              alignItems: 'flex-start', 
-              padding: '1.5rem',
-              height: '100%',
-              display: 'flex',
-              border: '1px solid #eaeaea',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              color: 'inherit',
-              transition: 'all 0.2s ease',
-              backgroundColor: '#fff'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
-                <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
-                  <Icon size={32} strokeWidth={1.5} />
+        {isLoading ? (
+          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          devTools.map((tool, index) => {
+            const Icon = tool.icon;
+            return (
+              <Link to={tool.path} key={index} className="tool-card fade-in" style={{ 
+                flexDirection: 'column', 
+                alignItems: 'flex-start', 
+                padding: '1.5rem',
+                height: '100%',
+                display: 'flex',
+                border: '1px solid #eaeaea',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                color: 'inherit',
+                transition: 'all 0.2s ease',
+                backgroundColor: '#fff'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', width: '100%' }}>
+                  <div className="tool-icon" style={{ color: tool.color, marginRight: '1rem' }}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
                 </div>
-                <h3 style={{ fontSize: '1.2rem', margin: 0, fontWeight: '700', color: '#333' }}>{tool.title}</h3>
-              </div>
-              <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
-            </Link>
-          );
-        })}
+                <p style={{ margin: 0, fontSize: '0.95rem', color: '#666', lineHeight: '1.5' }}>{tool.desc}</p>
+              </Link>
+            );
+          })
+        )}
       </div>
       
       {/* Footer / Coming Soon Section */}
