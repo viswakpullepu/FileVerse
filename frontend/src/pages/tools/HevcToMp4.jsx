@@ -7,6 +7,7 @@ export default function HevcToMp4() {
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [engineDownloadProgress, setEngineDownloadProgress] = useState(0);
   const [processedVideoUrl, setProcessedVideoUrl] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState(null);
@@ -24,10 +25,42 @@ export default function HevcToMp4() {
       setProgress(Math.round(progress * 100));
     });
 
+    const downloadWithProgress = async (url, setProgressCallback) => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+      
+      const contentLength = response.headers.get('content-length');
+      if (!contentLength) {
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+      }
+      
+      const total = parseInt(contentLength, 10);
+      let loaded = 0;
+      
+      const reader = response.body.getReader();
+      const chunks = [];
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.byteLength;
+        setProgressCallback(Math.round((loaded / total) * 100));
+      }
+      
+      const blob = new Blob(chunks, { type: response.headers.get('content-type') });
+      return URL.createObjectURL(blob);
+    };
+
     try {
+      // ffmpeg-core.wasm is the large file (approx 30MB), so we track it for the progress bar.
+      const coreURL = await downloadWithProgress(`${baseURL}/ffmpeg-core.js`, () => {});
+      const wasmURL = await downloadWithProgress(`${baseURL}/ffmpeg-core.wasm`, (p) => setEngineDownloadProgress(p));
+      
       await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
+        coreURL,
+        wasmURL,
       });
       setIsLoaded(true);
     } catch (e) {
@@ -84,7 +117,12 @@ export default function HevcToMp4() {
 
       {!isLoaded && !loadError && (
         <div style={{ padding: '2rem', background: '#fff3cd', color: '#856404', borderRadius: '8px', marginTop: '2rem' }}>
-          Loading Conversion Engine (approx. 30MB)... Please wait, this may take up to a minute depending on your internet speed.
+          <div style={{ marginBottom: '1rem' }}>
+            Loading Conversion Engine ({engineDownloadProgress}%)... Please wait, this is a one-time 30MB download.
+          </div>
+          <div style={{ width: '100%', height: '8px', backgroundColor: 'rgba(133, 100, 4, 0.2)', borderRadius: '4px', overflow: 'hidden' }}>
+            <div style={{ width: `${engineDownloadProgress}%`, height: '100%', backgroundColor: '#856404', transition: 'width 0.2s ease-out' }}></div>
+          </div>
         </div>
       )}
 
