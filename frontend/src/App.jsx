@@ -4,6 +4,7 @@ import { ChevronDown, Grid, Menu, X } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
 import MergePDF from './pages/tools/MergePDF';
+import GeminiWatermarkRemover from './pages/tools/GeminiWatermarkRemover';
 import SplitPDF from './pages/tools/SplitPDF';
 import ExtractPages from './pages/tools/ExtractPages';
 import RemovePages from './pages/tools/RemovePages';
@@ -63,6 +64,13 @@ import HevcToMp4 from './pages/tools/HevcToMp4';
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const imageTools = [
+    { title: 'Remove Background', icon: '✂️', description: 'Instantly remove backgrounds from images.', path: '/remove_bg' },
+    { title: 'Gemini Watermark Remover', icon: '✨', description: 'Remove the visible Google Gemini watermark from images.', path: '/gemini_watermark_remover' },
+    { title: 'Resize Image', icon: '📏', description: 'Change dimensions of any image.', path: '#' },
+    { title: 'Compress Image', icon: '🗜️', description: 'Reduce file size without losing quality.', path: '#' },
+    { title: 'Convert to WebP', icon: '🖼️', description: 'Optimize images for the web.', path: '#' },
+  ];
   const headerRef = useRef(null);
   const location = useLocation();
 
@@ -157,6 +165,7 @@ function App() {
                   <Link to="/merge_pdf" className="dropdown-item" onClick={closeDropdown}>Merge PDF</Link>
                   <Link to="/split_pdf" className="dropdown-item" onClick={closeDropdown}>Split PDF</Link>
                   <Link to="/image_to_pdf" className="dropdown-item" onClick={closeDropdown}>Image to PDF</Link>
+                  <Link to="/gemini_watermark_remover" className="dropdown-item" onClick={closeDropdown}>Gemini Watermark Remover</Link>
                 </div>
               )}
             </div>
@@ -343,6 +352,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/convert/:categoryId" element={<UniversalConverter />} />
           <Route path="/merge_pdf" element={<MergePDF />} />
+          <Route path="/gemini_watermark_remover" element={<GeminiWatermarkRemover />} />
           <Route path="/split_pdf" element={<SplitPDF />} />
           <Route path="/extract_pages" element={<ExtractPages />} />
           <Route path="/remove_pages" element={<RemovePages />} />

@@ -12,6 +12,7 @@
   "dependencies": {
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
+    "@pilio/gemini-watermark-remover": "^1.0.27",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^1.21.0",
     "marked": "^18.0.5",
