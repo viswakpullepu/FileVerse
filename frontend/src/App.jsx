@@ -58,6 +58,7 @@ import HtmlToMarkdown from './pages/tools/HtmlToMarkdown';
 import RegexTester from './pages/tools/RegexTester';
 import BcryptGenerator from './pages/tools/BcryptGenerator';
 import XmlToJson from './pages/tools/XmlToJson';
+import HevcToMp4 from './pages/tools/HevcToMp4';
 
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -275,6 +276,7 @@ function App() {
               VIDEO TOOLS <ChevronDown size={14} />
               {activeDropdown === 'video' && (
                 <div className="dropdown-menu">
+                  <Link to="/hevc_to_mp4" className="dropdown-item" onClick={closeDropdown}>HEVC to MP4</Link>
                   <Link to="/video_to_gif" className="dropdown-item" onClick={closeDropdown}>MP4 to GIF</Link>
                   <Link to="/webm_to_mp4" className="dropdown-item" onClick={closeDropdown}>WEBM to MP4</Link>
                   <Link to="/mute_video" className="dropdown-item" onClick={closeDropdown}>Mute Video</Link>
@@ -373,6 +375,7 @@ function App() {
           <Route path="/image_blur" element={<ImageBlur />} />
           <Route path="/bmp_to_png" element={<BmpToPng />} />
           <Route path="/webm_to_mp4" element={<WebmToMp4 />} />
+          <Route path="/hevc_to_mp4" element={<HevcToMp4 />} />
           <Route path="/mute_video" element={<MuteVideo />} />
           <Route path="/change_video_speed" element={<ChangeVideoSpeed />} />
           <Route path="/extract_video_frames" element={<ExtractVideoFrames />} />
