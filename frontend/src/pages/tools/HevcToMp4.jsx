@@ -9,6 +9,7 @@ export default function HevcToMp4() {
   const [progress, setProgress] = useState(0);
   const [processedVideoUrl, setProcessedVideoUrl] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState(null);
   const ffmpegRef = useRef(new FFmpeg());
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function HevcToMp4() {
       setIsLoaded(true);
     } catch (e) {
       console.error("Error loading FFmpeg:", e);
+      setLoadError("Failed to load the conversion engine. Please disable adblockers or try refreshing the page.");
     }
   };
 
@@ -80,9 +82,15 @@ export default function HevcToMp4() {
         Convert High Efficiency Video Coding (HEVC / H.265 / MOV) videos from iPhones or cameras to universally compatible H.264 MP4 format, directly in your browser.
       </p>
 
-      {!isLoaded && (
+      {!isLoaded && !loadError && (
         <div style={{ padding: '2rem', background: '#fff3cd', color: '#856404', borderRadius: '8px', marginTop: '2rem' }}>
-          Loading Conversion Engine... Please wait.
+          Loading Conversion Engine (approx. 30MB)... Please wait, this may take up to a minute depending on your internet speed.
+        </div>
+      )}
+
+      {loadError && (
+        <div style={{ padding: '2rem', background: '#f8d7da', color: '#721c24', borderRadius: '8px', marginTop: '2rem' }}>
+          <strong>Error:</strong> {loadError}
         </div>
       )}
 
