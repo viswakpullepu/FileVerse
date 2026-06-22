@@ -31,6 +31,7 @@ const pdfTools = [
 
 const imageTools = [
   { path: '/compress_image', title: 'Compress Image', desc: 'Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.', icon: Maximize, color: '#f7c324' },
+  { path: '/gemini_watermark_remover', title: 'Gemini Watermark Remover', desc: 'Remove the visible Google Gemini watermark from images natively.', icon: Sparkles, color: '#f7c324' },
   { path: '/resize_image', title: 'Resize Image', desc: 'Define your dimensions, by percent or pixel, and resize your JPG, PNG, and GIF images.', icon: Maximize, color: '#f7c324' },
   { path: '/convert_image', title: 'Convert Image', desc: 'Convert PNG to JPG, JPG to PNG, or to WEBP for the web.', icon: Replace, color: '#f7c324' },
   { path: '/rotate_image', title: 'Rotate Image', desc: 'Rotate many images at once. Choose to rotate only landscape or portrait images.', icon: RotateCw, color: '#f7c324' },
