@@ -410,6 +410,9 @@ function App() {
           <Route path="/xml_to_json" element={<XmlToJson />} />
         </Routes>
       </main>
+      <footer className="app-footer">
+        <p>© {new Date().getFullYear()} FileVerze. Made with love by <a href="https://vishwak.tech" target="_blank" rel="noopener noreferrer">Vishwak Naidu</a></p>
+      </footer>
     </div>
   );
 }
