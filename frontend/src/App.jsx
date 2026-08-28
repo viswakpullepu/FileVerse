@@ -60,6 +60,12 @@ import RegexTester from './pages/tools/RegexTester';
 import BcryptGenerator from './pages/tools/BcryptGenerator';
 import XmlToJson from './pages/tools/XmlToJson';
 import HevcToMp4 from './pages/tools/HevcToMp4';
+import SubtitleConverter from './pages/tools/SubtitleConverter';
+import GisConverter from './pages/tools/GisConverter';
+import ThreeDConverter from './pages/tools/ThreeDConverter';
+import EbookConverter from './pages/tools/EbookConverter';
+import FontConverter from './pages/tools/FontConverter';
+import OcrExtractor from './pages/tools/OcrExtractor';
 
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -408,6 +414,18 @@ function App() {
           <Route path="/regex_tester" element={<RegexTester />} />
           <Route path="/bcrypt_generator" element={<BcryptGenerator />} />
           <Route path="/xml_to_json" element={<XmlToJson />} />
+          <Route path="/subtitle_converter" element={<SubtitleConverter />} />
+          <Route path="/convert/subtitles" element={<SubtitleConverter />} />
+          <Route path="/gis_converter" element={<GisConverter />} />
+          <Route path="/convert/gis" element={<GisConverter />} />
+          <Route path="/threed_converter" element={<ThreeDConverter />} />
+          <Route path="/convert/3d" element={<ThreeDConverter />} />
+          <Route path="/ebook_converter" element={<EbookConverter />} />
+          <Route path="/convert/ebooks" element={<EbookConverter />} />
+          <Route path="/font_converter" element={<FontConverter />} />
+          <Route path="/convert/fonts" element={<FontConverter />} />
+          <Route path="/ocr_extractor" element={<OcrExtractor />} />
+          <Route path="/convert/ai" element={<OcrExtractor />} />
         </Routes>
       </main>
       <footer className="app-footer">

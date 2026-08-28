@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock } from 'lucide-react';
+import UniversalDropzone from '../components/UniversalDropzone';
 import { 
   FileText, Image as ImageIcon, Video, Music, 
   Database, Code, Archive, Box, BookOpen, 
@@ -77,7 +78,16 @@ const devTools = [
   { path: '/css_formatter', title: 'CSS Formatter & Minifier', desc: 'Organize CSS stylesheets or crunch them down for production.', icon: Code, color: '#333333' }
 ];
 
-const allTools = [...pdfTools, ...imageTools, ...videoTools, ...devTools];
+const phase2Tools = [
+  { path: '/subtitle_converter', title: 'Subtitle & Captions', desc: 'Convert SRT, VTT, ASS, TXT and shift sync offsets in real-time.', icon: MessageSquare, color: '#0ea5e9' },
+  { path: '/ocr_extractor', title: 'OCR AI Text Extractor', desc: 'Extract text from scanned images, screenshots, and receipts via browser AI.', icon: Sparkles, color: '#8b5cf6' },
+  { path: '/threed_converter', title: '3D & CAD Studio', desc: 'Interactive 3D geometry viewer, polycount inspector, and STL exporter.', icon: Box, color: '#f59e0b' },
+  { path: '/gis_converter', title: 'GIS & Spatial Data', desc: 'Convert GeoJSON, Google Earth KML, and CSV coordinates natively.', icon: Map, color: '#10b981' },
+  { path: '/ebook_converter', title: 'E-Book & EPUB Studio', desc: 'Build standard EPUB books from text or extract and read existing EPUBs.', icon: BookOpen, color: '#ec4899' },
+  { path: '/font_converter', title: 'Font Studio & Inspector', desc: 'Inspect glyphs, test typography, and generate CSS @font-face rules.', icon: Type, color: '#6366f1' },
+];
+
+const allTools = [...phase2Tools, ...pdfTools, ...imageTools, ...videoTools, ...devTools];
 
 const SkeletonCard = () => (
   <div className="tool-card skeleton" style={{
@@ -133,6 +143,9 @@ export default function Dashboard() {
         </p>
       </div>
 
+      {/* UNIVERSAL SMART DROPZONE */}
+      <UniversalDropzone />
+
       {/* RECENTLY USED SECTION */}
       {!isLoading && recentTools.length > 0 && (
         <>
@@ -159,6 +172,31 @@ export default function Dashboard() {
           </div>
         </>
       )}
+
+      {/* PHASE 2 & POWER TOOLS SECTION */}
+      <div className="section-header">
+        <h2 className="section-title">⭐ Phase 2 & Next-Gen Tools</h2>
+      </div>
+      <div className="tools-grid">
+        {isLoading ? (
+          Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+        ) : (
+          phase2Tools.map((tool, index) => {
+            const Icon = tool.icon;
+            return (
+              <Link to={tool.path} key={index} className="tool-card fade-in">
+                <div className="tool-card-header">
+                  <div className="tool-icon-wrapper" style={{ color: tool.color }}>
+                    <Icon size={32} strokeWidth={1.5} />
+                  </div>
+                  <h3 className="tool-title">{tool.title}</h3>
+                </div>
+                <p className="tool-desc">{tool.desc}</p>
+              </Link>
+            );
+          })
+        )}
+      </div>
 
       {/* PDF TOOLS SECTION */}
       <div className="section-header">
