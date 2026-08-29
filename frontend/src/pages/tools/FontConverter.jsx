@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import opentype from 'opentype.js';
+import { useFileContext } from '../../context/FileContext';
 import { Type, Download, Eye, Sparkles, Copy, Check } from 'lucide-react';
 
 export default function FontConverter() {
+  const { sharedFile } = useFileContext();
   const [font, setFont] = useState(null);
   const [fontInfo, setFontInfo] = useState({ name: 'System Default', glyphCount: 0, unitsPerEm: 1000 });
   const [previewText, setPreviewText] = useState('The quick brown fox jumps over the lazy dog! 1234567890');
@@ -12,10 +14,13 @@ export default function FontConverter() {
   const [copiedCss, setCopiedCss] = useState(false);
   const canvasRef = useRef(null);
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    if (sharedFile && (sharedFile.name?.match(/\.(ttf|otf|woff|woff2)$/i) || sharedFile.type?.includes('font'))) {
+      loadFontFile(sharedFile);
+    }
+  }, [sharedFile]);
 
+  const loadFontFile = (file) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -43,6 +48,11 @@ export default function FontConverter() {
       }
     };
     reader.readAsArrayBuffer(file);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) loadFontFile(file);
   };
 
   const getCssSnippet = () => {

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Tesseract from 'tesseract.js';
+import { useFileContext } from '../../context/FileContext';
 import { FileText, Sparkles, Copy, Check, Download, Image as ImageIcon } from 'lucide-react';
 
 export default function OcrExtractor() {
+  const { sharedFile } = useFileContext();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [extractedText, setExtractedText] = useState('');
@@ -12,6 +14,14 @@ export default function OcrExtractor() {
   const [status, setStatus] = useState('');
   const [language, setLanguage] = useState('eng');
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (sharedFile && (sharedFile.type?.startsWith('image/') || /\.(png|jpe?g|webp|svg|bmp|gif)$/i.test(sharedFile.name))) {
+      setImage(sharedFile);
+      setImagePreview(URL.createObjectURL(sharedFile));
+      setExtractedText('');
+    }
+  }, [sharedFile]);
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];

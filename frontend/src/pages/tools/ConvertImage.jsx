@@ -1,12 +1,20 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function ConvertImage() {
+  const { sharedFile } = useFileContext();
   const [file, setFile] = useState(null);
   const [targetFormat, setTargetFormat] = useState('image/png');
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedImageUrl, setProcessedImageUrl] = useState(null);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (sharedFile && (sharedFile.type?.startsWith('image/') || /\.(png|jpe?g|webp|svg|bmp|ico|gif)$/i.test(sharedFile.name))) {
+      setFile(sharedFile);
+    }
+  }, [sharedFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import JSZip from 'jszip';
+import { useFileContext } from '../../context/FileContext';
 import { BookOpen, Download, FileUp, Sparkles, FileText, CheckCircle2 } from 'lucide-react';
 
 export default function EbookConverter() {
+  const { sharedFile } = useFileContext();
   const [activeTab, setActiveTab] = useState('create'); // 'create' | 'extract'
   const [bookTitle, setBookTitle] = useState('My Digital E-Book');
   const [bookAuthor, setBookAuthor] = useState('Anonymous Author');
@@ -12,6 +14,39 @@ export default function EbookConverter() {
   ]);
   const [extractedData, setExtractedData] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (sharedFile && sharedFile.name?.toLowerCase().endsWith('.epub')) {
+      setActiveTab('extract');
+      readEpubFile(sharedFile);
+    }
+  }, [sharedFile]);
+
+  const readEpubFile = async (file) => {
+    setIsProcessing(true);
+    try {
+      const zip = await JSZip.loadAsync(file);
+      let title = file.name.replace(/\.epub$/i, '');
+      let fullText = '';
+
+      const htmlFiles = Object.keys(zip.files).filter(name => name.endsWith('.xhtml') || name.endsWith('.html') || name.endsWith('.htm'));
+      for (const fileName of htmlFiles) {
+        const text = await zip.file(fileName).async('text');
+        const doc = new DOMParser().parseFromString(text, 'text/html');
+        fullText += `\n\n=== ${fileName} ===\n\n` + (doc.body?.innerText || doc.body?.textContent || '');
+      }
+
+      setExtractedData({
+        title,
+        fileCount: htmlFiles.length,
+        text: fullText.trim()
+      });
+    } catch (err) {
+      alert('Failed to read EPUB file: ' + err.message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   // Generate standard EPUB package using JSZip
   const handleGenerateEpub = async () => {

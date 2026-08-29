@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 import { FileText, Download, Clock, ArrowRightLeft, Sparkles, Plus, Trash2 } from 'lucide-react';
 
 // Helper to convert time string to milliseconds
@@ -74,17 +75,21 @@ function parseVtt(content) {
 }
 
 export default function SubtitleConverter() {
+  const { sharedFile } = useFileContext();
   const [subtitles, setSubtitles] = useState([]);
   const [fileName, setFileName] = useState('');
   const [targetFormat, setTargetFormat] = useState('vtt');
   const [offsetMs, setOffsetMs] = useState(0);
   const [inputText, setInputText] = useState('');
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    if (sharedFile && (sharedFile.name?.match(/\.(srt|vtt|ass|txt)$/i) || sharedFile.type?.includes('subrip') || sharedFile.type?.includes('vtt'))) {
+      loadFile(sharedFile);
+    }
+  }, [sharedFile]);
+
+  const loadFile = (file) => {
     setFileName(file.name.replace(/\.[^/.]+$/, ''));
-    
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result;
@@ -98,6 +103,12 @@ export default function SubtitleConverter() {
       }
     };
     reader.readAsText(file);
+  };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    loadFile(file);
   };
 
   const handleApplyOffset = () => {

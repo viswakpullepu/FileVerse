@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import { FileProvider } from './context/FileContext.jsx'
 import { registerSW } from 'virtual:pwa-register'
 
 const updateSW = registerSW({
@@ -15,7 +16,9 @@ const updateSW = registerSW({
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <FileProvider>
+        <App />
+      </FileProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

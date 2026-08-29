@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function MergePDF() {
+  const { sharedFile } = useFileContext();
   const [files, setFiles] = useState([]);
   const [isMerging, setIsMerging] = useState(false);
   const [mergedPdfUrl, setMergedPdfUrl] = useState(null);
 
+  useEffect(() => {
+    if (sharedFile && (sharedFile.name?.toLowerCase().endsWith('.pdf') || sharedFile.type === 'application/pdf')) {
+      setFiles([sharedFile]);
+    }
+  }, [sharedFile]);
+
   const handleFileChange = (e) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files).filter(f => f.type === 'application/pdf');
+      const newFiles = Array.from(e.target.files).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
       setFiles(prev => [...prev, ...newFiles]);
     }
   };

@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function SplitPDF() {
+  const { sharedFile } = useFileContext();
   const [file, setFile] = useState(null);
   const [isSplitting, setIsSplitting] = useState(false);
   const [splitFiles, setSplitFiles] = useState([]);
+
+  useEffect(() => {
+    if (sharedFile && (sharedFile.name?.toLowerCase().endsWith('.pdf') || sharedFile.type === 'application/pdf')) {
+      setFile(sharedFile);
+    }
+  }, [sharedFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

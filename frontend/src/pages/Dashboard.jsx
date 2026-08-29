@@ -19,18 +19,24 @@ import {
 const pdfTools = [
   { path: '/merge_pdf', title: 'Merge PDF', desc: 'Combine PDFs in the order you want with the easiest PDF merger available.', icon: FilePlus, color: '#e5322d' },
   { path: '/split_pdf', title: 'Split PDF', desc: 'Separate one page or a whole set for easy conversion into independent PDF files.', icon: Scissors, color: '#e5322d' },
+  { path: '/pdf_to_word', title: 'PDF to Word', desc: 'Convert PDF files into editable Microsoft Word (.docx) documents in your browser.', icon: FileText, color: '#e5322d' },
+  { path: '/word_to_pdf', title: 'Word to PDF', desc: 'Convert Word DOCX documents directly into clean vector PDF files locally.', icon: FileText, color: '#2563eb' },
+  { path: '/compress_pdf', title: 'Compress PDF', desc: 'Shrink PDF file sizes with smart canvas and structure compression.', icon: Maximize, color: '#e5322d' },
+  { path: '/excel_to_pdf', title: 'Excel to PDF', desc: 'Convert spreadsheets (.xlsx, .xls) into clean formatted PDF tables.', icon: Database, color: '#059669' },
+  { path: '/powerpoint_to_pdf', title: 'PowerPoint to PDF', desc: 'Convert slide presentations (.pptx, .ppt) into landscape slide PDFs.', icon: Film, color: '#e11d48' },
+  { path: '/pdf_to_image', title: 'PDF to Image', desc: 'Convert every page of a PDF document into a high-quality JPG image instantly.', icon: ImageIcon, color: '#f7c324' },
+  { path: '/image_to_pdf', title: 'Image to PDF', desc: 'Convert JPG, PNG, and more to PDF in seconds. Easily adjust orientation and margins.', icon: ImagePlus, color: '#f7c324' },
   { path: '/remove_pages', title: 'Remove pages', desc: 'Remove pages from a PDF document in a flash.', icon: FileMinus, color: '#e5322d' },
   { path: '/extract_pages', title: 'Extract pages', desc: 'Get a new document containing only the desired pages.', icon: FileUp, color: '#e5322d' },
   { path: '/rotate_pdf', title: 'Rotate PDF', desc: 'Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!', icon: RotateCw, color: '#e5322d' },
   { path: '/add_page_numbers', title: 'Add page numbers', desc: 'Add page numbers into PDFs with ease. Choose your positions, dimensions, typography.', icon: Hash, color: '#e5322d' },
   { path: '/add_watermark', title: 'Add watermark', desc: 'Stamp an image or text over your PDF in seconds. Choose the typography, transparency and position.', icon: Droplets, color: '#e5322d' },
-  { path: '/image_to_pdf', title: 'Image to PDF', desc: 'Convert JPG, PNG, and more to PDF in seconds. Easily adjust orientation and margins.', icon: ImagePlus, color: '#f7c324' },
-  { path: '/pdf_to_image', title: 'PDF to Image', desc: 'Convert every page of a PDF document into a high-quality JPG image instantly.', icon: ImageIcon, color: '#f7c324' },
   { path: '/unlock_pdf', title: 'Unlock PDF', desc: 'Remove PDF password security, giving you the freedom to use your PDFs as you want.', icon: ShieldOff, color: '#e5322d' },
   { path: '/protect_pdf', title: 'Protect PDF', desc: 'Protect PDF files with a password. Encrypt PDF documents to prevent unauthorized access.', icon: Shield, color: '#e5322d' },
 ];
 
 const imageTools = [
+  { path: '/remove_background', title: 'Remove Background', desc: 'Isolate subjects and export transparent PNGs directly in your browser.', icon: Wand2, color: '#3b82f6' },
   { path: '/compress_image', title: 'Compress Image', desc: 'Compress JPG, PNG, SVG, and GIFs while saving space and maintaining quality.', icon: Maximize, color: '#f7c324' },
   { path: '/gemini_watermark_remover', title: 'Gemini Watermark Remover', desc: 'Remove the visible Google Gemini watermark from images natively.', icon: Sparkles, color: '#f7c324' },
   { path: '/resize_image', title: 'Resize Image', desc: 'Define your dimensions, by percent or pixel, and resize your JPG, PNG, and GIF images.', icon: Maximize, color: '#f7c324' },
@@ -298,20 +304,17 @@ export default function Dashboard() {
         )}
       </div>
       
-      {/* Footer / Coming Soon Section */}
-      <div className="coming-soon-section">
-        <h2 className="coming-soon-title">Backend Desktop Tools (Coming Soon to Web)</h2>
-        <p className="coming-soon-desc">
-          The following heavy-duty AI and conversion tools are currently only available when running fileverze locally on your computer via Python, and will be ported to the web soon:
-        </p>
-        <div className="coming-soon-tags">
-          <span className="coming-soon-tag">Word to PDF</span>
-          <span className="coming-soon-tag">PDF to Word</span>
-          <span className="coming-soon-tag">Excel to PDF</span>
-          <span className="coming-soon-tag">PowerPoint to PDF</span>
-          <span className="coming-soon-tag">Compress PDF</span>
-          <span className="coming-soon-tag">AI Background Removal</span>
+      {/* Privacy & Zero-Server Guarantee Section */}
+      <div className="coming-soon-section" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', margin: '4rem 2rem', padding: '3rem 2rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ecfdf5', color: '#059669', padding: '0.35rem 1rem', borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem', marginBottom: '1rem' }}>
+          <span>🔒 100% Client-Side & Private</span>
         </div>
+        <h2 className="coming-soon-title" style={{ fontSize: '1.8rem', fontWeight: 800, color: '#1e293b' }}>
+          Zero Server Uploads • Everything Runs in Your Browser
+        </h2>
+        <p className="coming-soon-desc" style={{ maxWidth: '680px', margin: '0.5rem auto 1.5rem auto', color: '#64748b' }}>
+          All 50+ tools in FileVerze process documents, media, spreadsheets, 3D models, subtitles, and code directly on your local device CPU/GPU. Your files never leave your computer.
+        </p>
       </div>
     </div>
   );

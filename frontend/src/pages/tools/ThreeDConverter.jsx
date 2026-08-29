@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import * as THREE from 'three';
+import { useFileContext } from '../../context/FileContext';
 import { Box, Download, Eye, RotateCw, Layers, Sparkles } from 'lucide-react';
 
 export default function ThreeDConverter() {
+  const { sharedFile } = useFileContext();
   const mountRef = useRef(null);
   const [modelStats, setModelStats] = useState({ vertices: 0, faces: 0, format: 'Sample Cube' });
   const [wireframe, setWireframe] = useState(false);
@@ -94,15 +96,17 @@ export default function ThreeDConverter() {
     }
   }, [wireframe, currentMesh]);
 
-  // Load user STL / OBJ file
-  const handleFileUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file || !sceneRef) return;
+  useEffect(() => {
+    if (sharedFile && sceneRef && sharedFile.name?.toLowerCase().endsWith('.stl')) {
+      load3DFile(sharedFile);
+    }
+  }, [sharedFile, sceneRef]);
 
+  const load3DFile = async (file) => {
+    if (!file || !sceneRef) return;
     const extension = file.name.split('.').pop()?.toLowerCase();
     const arrayBuffer = await file.arrayBuffer();
 
-    // Simple ASCII/Binary STL parser for client-side viewer
     if (extension === 'stl') {
       try {
         const dataView = new DataView(arrayBuffer);
@@ -159,9 +163,13 @@ export default function ThreeDConverter() {
       } catch (err) {
         alert('Could not parse STL file: ' + err.message);
       }
-    } else {
-      alert('Only .stl files are supported for instant direct client-side parsing.');
     }
+  };
+
+  // Load user STL / OBJ file
+  const handleFileUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) load3DFile(file);
   };
 
   // Export current geometry to STL

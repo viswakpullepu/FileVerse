@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 import { Map, Download, Code, ArrowRightLeft, FileText, CheckCircle2 } from 'lucide-react';
 
 // Client-side GeoJSON to KML converter
@@ -133,6 +134,7 @@ function escapeXml(unsafe) {
 }
 
 export default function GisConverter() {
+  const { sharedFile } = useFileContext();
   const [inputText, setInputText] = useState(`{
   "type": "FeatureCollection",
   "features": [
@@ -156,6 +158,30 @@ export default function GisConverter() {
   const [outputText, setOutputText] = useState('');
   const [conversionType, setConversionType] = useState('geojson-to-kml');
   const [stats, setStats] = useState({ featureCount: 3 });
+
+  useEffect(() => {
+    if (sharedFile && (sharedFile.name?.match(/\.(geojson|json|kml|csv)$/i) || sharedFile.type?.includes('json') || sharedFile.type?.includes('kml') || sharedFile.type?.includes('csv'))) {
+      loadGisFile(sharedFile);
+    }
+  }, [sharedFile]);
+
+  const loadGisFile = (file) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result;
+      if (typeof content === 'string') {
+        setInputText(content);
+        if (file.name.endsWith('.kml')) {
+          setConversionType('kml-to-geojson');
+        } else if (file.name.endsWith('.csv')) {
+          setConversionType('csv-to-geojson');
+        } else {
+          setConversionType('geojson-to-kml');
+        }
+      }
+    };
+    reader.readAsText(file);
+  };
 
   const handleConvert = () => {
     try {

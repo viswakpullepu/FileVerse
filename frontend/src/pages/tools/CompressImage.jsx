@@ -1,7 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function CompressImage() {
+  const { sharedFile } = useFileContext();
   const [file, setFile] = useState(null);
   const [compressionLevel, setCompressionLevel] = useState(0.7);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -9,6 +11,14 @@ export default function CompressImage() {
   const [originalSize, setOriginalSize] = useState(0);
   const [newSize, setNewSize] = useState(0);
   const canvasRef = useRef(null);
+
+  useEffect(() => {
+    if (sharedFile && sharedFile.type?.startsWith('image/')) {
+      setFile(sharedFile);
+      setOriginalSize(sharedFile.size);
+      setProcessedImageUrl(null);
+    }
+  }, [sharedFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
