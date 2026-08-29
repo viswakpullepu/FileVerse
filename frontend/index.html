@@ -16,6 +16,13 @@
     <meta name="theme-color" content="#111827" />
     <link rel="canonical" href="https://fileverze.com/" />
 
+    <!-- Geo & Regional Tags (GEO) -->
+    <meta name="geo.region" content="US" />
+    <meta name="geo.placename" content="Global / United States" />
+    <meta name="geo.position" content="37.7749;-122.4194" />
+    <meta name="ICBM" content="37.7749, -122.4194" />
+    <meta http-equiv="content-language" content="en" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://fileverze.com/" />
@@ -31,29 +38,86 @@
     <meta property="twitter:description" content="Convert, compress, and edit PDFs, images, videos, 3D models, fonts, subtitles, and spreadsheets 100% locally in your browser. Zero server uploads, maximum privacy." />
     <meta property="twitter:image" content="https://fileverze.com/favicon.svg" />
 
-    <!-- JSON-LD Structured Data Schema -->
+    <!-- Discovery Files for AI & Crawlers -->
+    <link rel="alternate" type="text/plain" href="https://fileverze.com/llms.txt" title="LLM Documentation" />
+    <link rel="sitemap" type="application/xml" href="https://fileverze.com/sitemap.xml" title="Sitemap" />
+
+    <!-- JSON-LD Structured Data Schema: WebApplication + FAQPage + Organization -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "FileVerze",
-      "url": "https://fileverze.com",
-      "description": "Free, 100% client-side file conversion and processing suite running entirely inside the web browser with zero server uploads.",
-      "applicationCategory": "UtilitiesApplication",
-      "operatingSystem": "Any / Web Browser",
-      "browserRequirements": "Requires JavaScript. Requires HTML5.",
-      "softwareVersion": "2.0.0",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "featureList": [
-        "Universal Smart File Dropzone with dynamic tool detection",
-        "PDF Tools: Merge, Split, PDF to Word, Word to PDF, Compress PDF, Protect/Unlock",
-        "Image Tools: Remove Background, OCR Extractor, Compress, Convert, Gemini Watermark Remover",
-        "Phase 2 Advanced Tools: 3D STL/OBJ Viewport, GIS GeoJSON/KML Converter, Typography Font Inspector, EPUB E-Book Reader, Subtitle Converter",
-        "Data & Dev: CSV to JSON, JSON to CSV, Base64, Cryptographic Hashes, Markdown to HTML"
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://fileverze.com/#webapp",
+          "name": "FileVerze",
+          "url": "https://fileverze.com",
+          "description": "Free, 100% client-side file conversion and processing suite running entirely inside the web browser with zero server uploads.",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any / Web Browser",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "softwareVersion": "2.0.0",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Universal Smart File Dropzone with dynamic tool detection",
+            "PDF Tools: Merge, Split, PDF to Word, Word to PDF, Compress PDF, Protect/Unlock",
+            "Image Tools: Remove Background, OCR Extractor, Compress, Convert, Gemini Watermark Remover",
+            "Phase 2 Advanced Tools: 3D STL/OBJ Viewport, GIS GeoJSON/KML Converter, Typography Font Inspector, EPUB E-Book Reader, Subtitle Converter",
+            "Data & Dev: CSV to JSON, JSON to CSV, Base64, Cryptographic Hashes, Markdown to HTML"
+          ]
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://fileverze.com/#organization",
+          "name": "FileVerze",
+          "url": "https://fileverze.com",
+          "logo": "https://fileverze.com/favicon.svg",
+          "sameAs": [
+            "https://github.com/viswakpullepu/FileVerse"
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://fileverze.com/#faq",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Is FileVerze free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, FileVerze is 100% free with no file size limits, no registration required, and no hidden subscriptions. All tools execute directly on your device."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my files uploaded to an external server?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. FileVerze uses client-side WebAssembly, HTML5 Canvas, and Web APIs. Your documents and files never leave your computer or web browser."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can FileVerze convert Word, Excel, and PowerPoint files offline?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes. FileVerze unpacks OpenXML structures (.docx, .xlsx, .pptx) directly in browser memory and renders paginated vector PDF documents without any backend server."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What formats does the Universal Dropzone support?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Universal Dropzone supports over 50 formats including PDFs, Images (PNG, JPG, WebP, SVG, BMP, ICO), Videos (MP4, WebM, MOV), 3D STL models, Subtitles (SRT, VTT, ASS), Fonts (TTF, OTF, WOFF), EPUB E-Books, GIS Map files (GeoJSON, KML), and spreadsheets."
+              }
+            }
+          ]
+        }
       ]
     }
     </script>

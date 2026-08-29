@@ -305,7 +305,7 @@ export default function Dashboard() {
       </div>
       
       {/* Privacy & Zero-Server Guarantee Section */}
-      <div className="coming-soon-section" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', margin: '4rem 2rem', padding: '3rem 2rem' }}>
+      <div className="coming-soon-section" style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', margin: '4rem 2rem 2rem 2rem', padding: '3rem 2rem' }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ecfdf5', color: '#059669', padding: '0.35rem 1rem', borderRadius: '20px', fontWeight: 700, fontSize: '0.85rem', marginBottom: '1rem' }}>
           <span>🔒 100% Client-Side & Private</span>
         </div>
@@ -316,6 +316,56 @@ export default function Dashboard() {
           All 50+ tools in FileVerze process documents, media, spreadsheets, 3D models, subtitles, and code directly on your local device CPU/GPU. Your files never leave your computer.
         </p>
       </div>
+
+      {/* SEO & GEO Semantic Knowledge & FAQ Section */}
+      <section className="faq-section" style={{ maxWidth: '960px', margin: '0 auto 4rem auto', padding: '0 1.5rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#111827', marginBottom: '0.5rem' }}>
+            Frequently Asked Questions
+          </h2>
+          <p style={{ color: '#64748b', fontSize: '0.95rem' }}>
+            Learn how FileVerze provides private, browser-native file conversions with zero server uploads.
+          </p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '1.25rem' }}>
+          {[
+            {
+              q: 'How does 100% in-browser conversion work?',
+              a: 'FileVerze uses WebAssembly (WASM), WebGL, HTML5 Canvas, and modern Web APIs. Conversions are calculated locally in your browser memory (RAM) and CPU threads—no files are ever uploaded across the internet.'
+            },
+            {
+              q: 'Is FileVerze free with unlimited conversions?',
+              a: 'Yes, FileVerze is completely free. There are no subscriptions, no file size throttles, no account registrations, and no watermarks placed on your converted files.'
+            },
+            {
+              q: 'Can I use FileVerze for confidential or legal files?',
+              a: 'Absolutely. Because files are processed entirely on your local machine and never leave your web browser, FileVerze satisfies strict confidentiality, GDPR, and enterprise NDA security requirements.'
+            },
+            {
+              q: 'Does FileVerze work offline without internet?',
+              a: 'Yes. FileVerze is built as a Progressive Web App (PWA). Once loaded in your browser, all tool scripts and workers are cached locally, allowing you to convert files even with zero network connection.'
+            },
+            {
+              q: 'How do I convert Word (.docx) or Excel (.xlsx) to PDF?',
+              a: 'Drop your file into the Universal Dropzone or navigate to Word to PDF / Excel to PDF. FileVerze parses the OpenXML package in memory and renders crisp vector PDF tables and pages instantly.'
+            },
+            {
+              q: 'What 3D and GIS formats can I inspect and convert?',
+              a: 'FileVerze includes a WebGL 3D viewport for binary STL meshes and an interactive geospatial engine for bidirectional conversion between GeoJSON, Google Earth KML, and CSV coordinate tables.'
+            }
+          ].map((item, idx) => (
+            <div key={idx} style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '1.5rem', boxShadow: '0 2px 8px rgba(0,0,0,0.02)' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#111827', marginBottom: '0.5rem' }}>
+                {item.q}
+              </h3>
+              <p style={{ fontSize: '0.88rem', color: '#64748b', lineHeight: 1.55, margin: 0 }}>
+                {item.a}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
