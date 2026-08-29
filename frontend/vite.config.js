@@ -18,17 +18,19 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}']
       },
       manifest: {
-        name: 'fileverze',
-        short_name: 'fileverze',
-        description: 'Every tool you could need in one place, running completely locally.',
-        theme_color: '#ffffff',
+        name: 'FileVerze — Private In-Browser File Converter',
+        short_name: 'FileVerze',
+        description: 'Free, 100% in-browser file converter and privacy powerhouse. Process PDFs, images, videos, 3D models, fonts, and spreadsheets locally.',
+        theme_color: '#111827',
         background_color: '#ffffff',
         display: 'standalone',
+        categories: ['productivity', 'utilities', 'photo', 'video', 'developer'],
         icons: [
           {
             src: '/favicon.svg',
             sizes: 'any',
-            type: 'image/svg+xml'
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
           }
         ]
       }

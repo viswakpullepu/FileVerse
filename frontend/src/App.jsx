@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid, Menu, X } from 'lucide-react';
+import SEO from './components/SEO';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
 import MergePDF from './pages/tools/MergePDF';
@@ -116,6 +117,9 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Dynamic SEO Meta & Title Manager */}
+      <SEO />
+
       <header className="header" ref={headerRef}>
         <div className="header-left">
           <button className="mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
