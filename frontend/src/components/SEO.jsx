@@ -18,6 +18,11 @@ const ROUTE_SEO_MAP = {
     description: 'Drop any document, image, video, 3D model, or spreadsheet to detect and convert natively.',
     keywords: 'universal converter, smart dropzone, file format detector'
   },
+  '/faq': {
+    title: 'Frequently Asked Questions & Knowledge Base — FileVerze',
+    description: 'Learn how FileVerze processes PDFs, images, videos, 3D models, and office documents 100% locally in your browser with zero server uploads.',
+    keywords: 'fileverze faq, private file converter faq, zero upload conversion, client side file tools questions'
+  },
 
   // PDF
   '/merge_pdf': {

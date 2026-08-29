@@ -67,6 +67,7 @@ import ThreeDConverter from './pages/tools/ThreeDConverter';
 import EbookConverter from './pages/tools/EbookConverter';
 import FontConverter from './pages/tools/FontConverter';
 import OcrExtractor from './pages/tools/OcrExtractor';
+import FaqPage from './pages/FaqPage';
 
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -343,16 +344,25 @@ function App() {
               {activeDropdown === 'all' && (
                 <div className="dropdown-menu">
                   <Link to="/" className="dropdown-item" onClick={closeDropdown}>View Dashboard</Link>
+                  <Link to="/faq" className="dropdown-item" onClick={closeDropdown}>FAQ & Knowledge Base</Link>
                   <Link to="/json_to_csv" className="dropdown-item" onClick={closeDropdown}>JSON to CSV</Link>
                   <Link to="/convert/3d" className="dropdown-item" onClick={closeDropdown}>3D & CAD</Link>
                   <Link to="/hash_generator" className="dropdown-item" onClick={closeDropdown}>Hash Generator (SHA256)</Link>
                 </div>
               )}
             </div>
+
+            {/* FAQ DIRECT NAV */}
+            <Link to="/faq" className="nav-item" style={{ textDecoration: 'none', color: '#111827', fontWeight: 600 }}>
+              FAQ
+            </Link>
           </nav>
         </div>
 
         <div className="header-right">
+          <Link to="/faq" style={{ textDecoration: 'none', color: '#111827', fontSize: '0.85rem', fontWeight: 700, padding: '0.4rem 0.85rem', borderRadius: '6px', background: '#f8fafc', border: '1px solid #e2e8f0', marginRight: '0.5rem' }}>
+            Help & FAQ
+          </Link>
           <button className="btn-grid"><Grid size={24} color="#555" /></button>
         </div>
       </header>
@@ -360,6 +370,7 @@ function App() {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/convert/:categoryId" element={<UniversalConverter />} />
           <Route path="/merge_pdf" element={<MergePDF />} />
           <Route path="/gemini_watermark_remover" element={<GeminiWatermarkRemover />} />
