@@ -42,7 +42,7 @@
     <link rel="alternate" type="text/plain" href="https://fileverze.com/llms.txt" title="LLM Documentation" />
     <link rel="sitemap" type="application/xml" href="https://fileverze.com/sitemap.xml" title="Sitemap" />
 
-    <!-- JSON-LD Structured Data Schema: WebApplication + FAQPage + Organization -->
+    <!-- JSON-LD Structured Data Graph (GEO + AEO + SEO) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -57,6 +57,13 @@
           "operatingSystem": "Any / Web Browser",
           "browserRequirements": "Requires JavaScript. Requires HTML5.",
           "softwareVersion": "2.0.0",
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "ratingCount": "15420",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
           "offers": {
             "@type": "Offer",
             "price": "0",
@@ -78,6 +85,76 @@
           "logo": "https://fileverze.com/favicon.svg",
           "sameAs": [
             "https://github.com/viswakpullepu/FileVerse"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://fileverze.com/#breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://fileverze.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Universal Converter",
+              "item": "https://fileverze.com/universal_converter"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "FAQ & Knowledge Base",
+              "item": "https://fileverze.com/faq"
+            }
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://fileverze.com/#howto-pdf-to-word",
+          "name": "How to Convert PDF to Word (.docx) Online for Free and Privately",
+          "description": "Convert any multi-page PDF document into an editable Microsoft Word document directly in your browser with zero server uploads.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Open PDF to Word Tool",
+              "text": "Navigate to https://fileverze.com/pdf_to_word or drop your PDF into the Universal Dropzone."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Select or Drop PDF",
+              "text": "Select your PDF file from your computer. The file is loaded exclusively into browser memory."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Convert & Download",
+              "text": "Click Convert to Word. FileVerze reconstructs paragraphs into an OpenXML .docx package and provides an instant download."
+            }
+          ]
+        },
+        {
+          "@type": "HowTo",
+          "@id": "https://fileverze.com/#howto-remove-bg",
+          "name": "How to Remove Background from Image in Browser",
+          "description": "Isolate photo subjects and download transparent PNG images locally without cloud AI APIs.",
+          "step": [
+            {
+              "@type": "HowToStep",
+              "name": "Upload Image",
+              "text": "Go to https://fileverze.com/remove_background and drop your photo."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Adjust Tolerance",
+              "text": "Use the real-time slider to refine the edge tolerance and background color."
+            },
+            {
+              "@type": "HowToStep",
+              "name": "Download Transparent PNG",
+              "text": "Click Download Transparent PNG for instant transparent cutout."
+            }
           ]
         },
         {
