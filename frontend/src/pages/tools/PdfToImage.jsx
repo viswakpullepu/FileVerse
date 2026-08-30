@@ -2,16 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import { useFileContext } from '../../context/FileContext';
+import { createTrackedObjectURL, cleanupComponentMemory } from '../../utils/memoryManager';
+import { getSafeMemoryLimits, isIOSWebKit } from '../../utils/platformDetector';
 
 export default function PdfToImage() {
   const { sharedFile, clearFile } = useFileContext();
   const location = useLocation();
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [progressText, setProgressText] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [images, setImages] = useState([]);
+  const [platformWarning, setPlatformWarning] = useState(null);
 
-  // Hydrate staged file
+  // Hydrate staged file & lifecycle memory cleanup
   useEffect(() => {
     const stagedFile = sharedFile || location.state?.autoLoadedFile;
     if (stagedFile) {
@@ -19,7 +23,17 @@ export default function PdfToImage() {
       setErrorMsg('');
       setImages([]);
       clearFile();
+
+      // Check mobile limits
+      const limits = getSafeMemoryLimits('pdf');
+      if (limits.isRestricted && stagedFile.size > limits.maxSafeSizeMB * 1024 * 1024) {
+        setPlatformWarning(limits.warning);
+      }
     }
+
+    return () => {
+      cleanupComponentMemory('pdf-to-image');
+    };
   }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
@@ -29,18 +43,25 @@ export default function PdfToImage() {
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selected = e.target.files[0];
+      setFile(selected);
       setErrorMsg('');
       setImages([]);
+      cleanupComponentMemory('pdf-to-image');
+
+      const limits = getSafeMemoryLimits('pdf');
+      if (limits.isRestricted && selected.size > limits.maxSafeSizeMB * 1024 * 1024) {
+        setPlatformWarning(limits.warning);
+      } else {
+        setPlatformWarning(null);
+      }
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-      setErrorMsg('');
-      setImages([]);
+      handleFileChange({ target: { files: e.dataTransfer.files } });
     }
   };
 
@@ -49,62 +70,79 @@ export default function PdfToImage() {
     setIsProcessing(true);
     setErrorMsg('');
     setImages([]);
+    cleanupComponentMemory('pdf-to-image');
+
+    const isMobile = isIOSWebKit();
+    // Use conservative scale factor on iOS Safari to prevent WebKit heap exhaustion
+    const scaleFactor = isMobile ? 1.4 : 2.0;
 
     try {
-      const fileReader = new FileReader();
-      fileReader.onload = async function() {
-        try {
-          const typedarray = new Uint8Array(this.result);
-          const pdf = await pdfjsLib.getDocument(typedarray).promise;
-          const numPages = pdf.numPages;
-          const extractedImages = [];
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const numPages = pdf.numPages;
+      const extractedImages = [];
 
-          for (let i = 1; i <= numPages; i++) {
-            const page = await pdf.getPage(i);
-            const viewport = page.getViewport({ scale: 2.0 }); // High quality
+      // Reusable single canvas to prevent allocating hundreds of DOM canvases in RAM
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d', { willReadFrequently: true });
 
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+      for (let i = 1; i <= numPages; i++) {
+        setProgressText(`Rendering page ${i} of ${numPages}...`);
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({ scale: scaleFactor });
 
-            const renderContext = {
-              canvasContext: context,
-              viewport: viewport
-            };
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
 
-            await page.render(renderContext).promise;
-            
-            // Convert to JPG
-            const imageUrl = canvas.toDataURL('image/jpeg', 0.9);
-            extractedImages.push({
-              pageNumber: i,
-              url: imageUrl
-            });
-          }
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport
+        };
 
-          setImages(extractedImages);
-          setIsProcessing(false);
-        } catch (err) {
-          console.error(err);
-          setErrorMsg("Failed to process the PDF file.");
-          setIsProcessing(false);
+        await page.render(renderContext).promise;
+
+        // Convert to Blob instead of massive DataURL strings to prevent V8/WebKit heap bloat
+        const blob = await new Promise((resolve) => {
+          canvas.toBlob(resolve, 'image/jpeg', 0.88);
+        });
+
+        if (blob) {
+          const trackedUrl = createTrackedObjectURL(blob, 'pdf-to-image');
+          extractedImages.push({
+            pageNumber: i,
+            url: trackedUrl
+          });
         }
-      };
-      fileReader.readAsArrayBuffer(file);
-    } catch (err) {
-      console.error(err);
-      setErrorMsg("Error reading the file.");
+
+        // Release PDF page memory immediately
+        if (typeof page.cleanup === 'function') {
+          page.cleanup();
+        }
+      }
+
+      setImages(extractedImages);
       setIsProcessing(false);
+      setProgressText('');
+    } catch (err) {
+      console.error('PDF Conversion error:', err);
+      setErrorMsg('Failed to process the PDF document. Please ensure it is not password protected or corrupted.');
+      setIsProcessing(false);
+      setProgressText('');
     }
   };
 
   return (
     <div className="tool-page" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
-      <h1>PDF to Image</h1>
+      <h1>PDF to Image Converter</h1>
       <p style={{ marginTop: '1rem', color: '#666' }}>
-        Convert every page of a PDF document into a high-quality JPG image instantly in your browser.
+        Convert every page of a PDF document into a high-quality JPG image instantly and securely in your browser.
       </p>
+
+      {platformWarning && (
+        <div style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '0.85rem 1rem', borderRadius: '8px', color: '#92400e', fontSize: '0.88rem', marginTop: '1.25rem' }}>
+          📱 <strong>Mobile Safeguard:</strong> {platformWarning}
+        </div>
+      )}
 
       {!images.length ? (
         <div style={{ marginTop: '2rem' }}>
@@ -122,36 +160,36 @@ export default function PdfToImage() {
             <input 
               id="file-upload" 
               type="file" 
-              accept="application/pdf"
+              accept=".pdf" 
               style={{ display: 'none' }} 
+              onClick={(e) => { e.target.value = ''; }}
               onChange={handleFileChange}
             />
           </div>
 
-          {errorMsg && <div style={{ color: 'red', marginTop: '1rem', textAlign: 'center' }}>{errorMsg}</div>}
+          {errorMsg && <p style={{ color: 'red', marginTop: '1rem' }}>{errorMsg}</p>}
 
-          {file && (
-            <button 
-              className="btn btn-primary" 
-              onClick={convertToImages}
-              disabled={isProcessing}
-              style={{ width: '100%', marginTop: '2rem', padding: '1rem', fontSize: '1.2rem', backgroundColor: 'var(--primary)', color: 'white' }}
-            >
-              {isProcessing ? 'Converting Pages to Images...' : 'Convert to JPG'}
-            </button>
-          )}
+          <button 
+            className="btn" 
+            onClick={convertToImages} 
+            disabled={!file || isProcessing}
+            style={{ marginTop: '2rem', width: '100%' }}
+          >
+            {isProcessing ? (progressText || 'Converting Pages...') : 'Convert to Images'}
+          </button>
         </div>
       ) : (
         <div style={{ marginTop: '2rem' }}>
-          <div style={{ padding: '2rem', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', textAlign: 'center', marginBottom: '2rem' }}>
-            <h2 style={{ color: '#166534', marginBottom: '1rem' }}>Successfully Extracted {images.length} Images!</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <h2>Extracted Images ({images.length} pages)</h2>
             <button 
               className="btn" 
+              style={{ backgroundColor: '#6c757d' }}
               onClick={() => {
                 setImages([]);
                 setFile(null);
+                cleanupComponentMemory('pdf-to-image');
               }}
-              style={{ backgroundColor: '#666' }}
             >
               Convert Another PDF
             </button>
@@ -159,14 +197,18 @@ export default function PdfToImage() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
             {images.map((img) => (
-              <div key={img.pageNumber} style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '1rem', textAlign: 'center', backgroundColor: 'white' }}>
-                <img src={img.url} alt={`Page ${img.pageNumber}`} style={{ width: '100%', height: 'auto', border: '1px solid #eee', marginBottom: '1rem' }} />
-                <p style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Page {img.pageNumber}</p>
+              <div key={img.pageNumber} style={{ border: '1px solid #e0e0e0', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+                <img 
+                  src={img.url} 
+                  alt={`Page ${img.pageNumber}`} 
+                  style={{ width: '100%', height: 'auto', borderRadius: '4px', border: '1px solid #eee', objectFit: 'contain', maxHeight: '250px' }} 
+                />
+                <p style={{ margin: '0.5rem 0', fontWeight: 'bold' }}>Page {img.pageNumber}</p>
                 <a 
                   href={img.url} 
-                  download={`page_${img.pageNumber}.jpg`} 
+                  download={`page-${img.pageNumber}.jpg`} 
                   className="btn"
-                  style={{ display: 'block', width: '100%', fontSize: '0.9rem' }}
+                  style={{ display: 'block', padding: '0.4rem', fontSize: '0.85rem' }}
                 >
                   Download JPG
                 </a>
@@ -175,7 +217,7 @@ export default function PdfToImage() {
           </div>
         </div>
       )}
-      
+
       <div style={{ marginTop: '3rem' }}>
         <Link to="/" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>&larr; Back to Dashboard</Link>
       </div>

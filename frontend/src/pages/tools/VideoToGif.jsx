@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
-import { fetchFile, toBlobURL } from '@ffmpeg/util';
+import { fetchFile } from '@ffmpeg/util';
 import { Link, useLocation } from 'react-router-dom';
 import { useFileContext } from '../../context/FileContext';
+import { loadResilientFFmpeg } from '../../utils/ffmpegLoader';
+import { createTrackedObjectURL, cleanupComponentMemory, flushFFmpegMemFS } from '../../utils/memoryManager';
+import { getSafeMemoryLimits } from '../../utils/platformDetector';
 
 export default function VideoToGif() {
   const { sharedFile, clearFile } = useFileContext();
@@ -12,17 +15,27 @@ export default function VideoToGif() {
   const [progress, setProgress] = useState(0);
   const [processedGifUrl, setProcessedGifUrl] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [platformWarning, setPlatformWarning] = useState(null);
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef(null);
 
-  // Hydrate staged file
+  // Hydrate staged file & cleanup on unmount
   useEffect(() => {
     const stagedFile = sharedFile || location.state?.autoLoadedFile;
     if (stagedFile) {
       setFile(stagedFile);
       setProcessedGifUrl(null);
       clearFile();
+
+      const limits = getSafeMemoryLimits('video');
+      if (limits.isRestricted && stagedFile.size > limits.maxSafeSizeMB * 1024 * 1024) {
+        setPlatformWarning(limits.warning);
+      }
     }
+
+    return () => {
+      cleanupComponentMemory('video-to-gif');
+    };
   }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
@@ -30,7 +43,6 @@ export default function VideoToGif() {
   }, []);
 
   const load = async () => {
-    const baseURL = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
     const ffmpeg = ffmpegRef.current;
     
     ffmpeg.on('progress', ({ progress, time }) => {
@@ -38,26 +50,36 @@ export default function VideoToGif() {
     });
 
     try {
-      await ffmpeg.load({
-        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
-        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
-      });
+      await loadResilientFFmpeg(ffmpeg);
       setIsLoaded(true);
     } catch (e) {
       console.error("Error loading FFmpeg:", e);
+      if (messageRef.current) {
+        messageRef.current.innerText = e.message || 'Failed to load video engine.';
+      }
     }
   };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selected = e.target.files[0];
+      setFile(selected);
+      setProcessedGifUrl(null);
+      cleanupComponentMemory('video-to-gif');
+
+      const limits = getSafeMemoryLimits('video');
+      if (limits.isRestricted && selected.size > limits.maxSafeSizeMB * 1024 * 1024) {
+        setPlatformWarning(limits.warning);
+      } else {
+        setPlatformWarning(null);
+      }
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
+      handleFileChange({ target: { files: e.dataTransfer.files } });
     }
   };
 
@@ -65,131 +87,109 @@ export default function VideoToGif() {
     if (!file || !isLoaded) return;
     setIsProcessing(true);
     setProgress(0);
+    cleanupComponentMemory('video-to-gif');
     
+    const ffmpeg = ffmpegRef.current;
+    const inputName = 'input.mp4';
+    const outputName = 'output.gif';
+
     try {
-      const ffmpeg = ffmpegRef.current;
-      await ffmpeg.writeFile('input.mp4', await fetchFile(file));
+      await ffmpeg.writeFile(inputName, await fetchFile(file));
       
-      // Convert to GIF, scaling to width 480 (maintaining aspect ratio) and 10 FPS
-      await ffmpeg.exec(['-i', 'input.mp4', '-vf', 'fps=10,scale=480:-1:flags=lanczos', '-c:v', 'gif', 'output.gif']);
+      // High quality palettegen GIF conversion
+      await ffmpeg.exec([
+        '-i', inputName,
+        '-t', '10', // limit to first 10s by default to prevent browser lockup
+        '-vf', 'fps=10,scale=480:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse',
+        '-loop', '0',
+        outputName
+      ]);
       
-      const data = await ffmpeg.readFile('output.gif');
-      const blob = new Blob([data.buffer], { type: 'image/gif' });
-      const url = URL.createObjectURL(blob);
-      
+      const data = await ffmpeg.readFile(outputName);
+      const gifBlob = new Blob([data.buffer], { type: 'image/gif' });
+      const url = createTrackedObjectURL(gifBlob, 'video-to-gif');
       setProcessedGifUrl(url);
     } catch (error) {
-      console.error('Error converting video:', error);
-      alert('Failed to convert video to GIF.');
+      console.error("Conversion failed:", error);
+      alert("Error converting video to GIF. Please check format or try a smaller video.");
     } finally {
+      // Flush MEMFS to prevent heap bloat
+      await flushFFmpegMemFS(ffmpeg, [inputName, outputName]);
       setIsProcessing(false);
-      setProgress(0);
     }
   };
 
   return (
-    <div className="tool-page" style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
-      <h1>Video to GIF</h1>
+    <div className="tool-page" style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem' }}>
+      <h1>Video to GIF Converter</h1>
       <p style={{ marginTop: '1rem', color: '#666' }}>
-        Convert MP4 or WebM videos into lightweight, shareable GIFs completely offline using WebAssembly.
+        Convert your MP4, WebM, or MOV videos into animated GIFs entirely in your browser using client-side WebAssembly.
       </p>
 
-      {!isLoaded && (
-        <div style={{ padding: '2rem', background: '#fff3cd', color: '#856404', borderRadius: '8px', marginTop: '2rem' }}>
-          Loading WebAssembly Core... Please wait.
+      {platformWarning && (
+        <div style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '0.85rem 1rem', borderRadius: '8px', color: '#92400e', fontSize: '0.88rem', marginTop: '1.25rem' }}>
+          📱 <strong>Mobile Safeguard:</strong> {platformWarning}
         </div>
       )}
 
-      {!processedGifUrl ? (
-        <>
-          <div 
-            className={`dropzone ${!isLoaded ? 'disabled' : ''}`}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
-            onClick={() => isLoaded && document.getElementById('file-upload').click()}
-            style={{ 
-              padding: '4rem 2rem', 
-              marginTop: '2rem',
-              opacity: isLoaded ? 1 : 0.5,
-              cursor: isLoaded ? 'pointer' : 'not-allowed'
-            }}
+      <div style={{ marginTop: '2rem' }}>
+        <div 
+          className="dropzone"
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDrop}
+          onClick={() => document.getElementById('file-upload').click()}
+          style={{ padding: '3rem 2rem', cursor: 'pointer' }}
+        >
+          <p style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>
+            {file ? file.name : 'Select Video File'}
+          </p>
+          <span style={{ fontSize: '0.9rem', color: '#888', display: 'block', marginTop: '1rem' }}>
+            {file ? 'Click to change file' : 'or drop MP4/WebM here'}
+          </span>
+          <input 
+            id="file-upload" 
+            type="file" 
+            accept="video/*" 
+            style={{ display: 'none' }} 
+            onClick={(e) => { e.target.value = ''; }}
+            onChange={handleFileChange}
+          />
+        </div>
+
+        <p ref={messageRef} style={{ color: 'red', marginTop: '0.5rem' }}></p>
+
+        <button 
+          className="btn" 
+          onClick={convertToGif} 
+          disabled={!file || isProcessing || !isLoaded}
+          style={{ marginTop: '2rem', width: '100%' }}
+        >
+          {!isLoaded ? 'Loading Video Engine...' : isProcessing ? `Converting... (${progress}%)` : 'Convert to GIF'}
+        </button>
+      </div>
+
+      {processedGifUrl && (
+        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+          <h3>Generated GIF:</h3>
+          <img 
+            src={processedGifUrl} 
+            alt="Generated GIF" 
+            style={{ maxWidth: '100%', maxHeight: '400px', margin: '1rem 0', borderRadius: '8px', border: '1px solid #ccc' }} 
+          />
+          <br/>
+          <a 
+            href={processedGifUrl} 
+            download="converted.gif" 
+            className="btn"
+            style={{ display: 'inline-block', marginTop: '1rem' }}
           >
-            <p style={{ fontSize: '1.5rem' }}>{file ? file.name : 'Select Video File'}</p>
-            <span style={{ fontSize: '1rem', color: '#888', display: 'block', marginTop: '1rem' }}>
-              {file ? 'Click to change file' : 'or drop Video here (MP4, WebM)'}
-            </span>
-            <input 
-              id="file-upload" 
-              type="file" 
-              accept="video/mp4,video/webm" 
-              style={{ display: 'none' }} 
-              onChange={handleFileChange}
-              disabled={!isLoaded}
-            />
-          </div>
-
-          {file && (
-            <div style={{ marginTop: '2rem', textAlign: 'left', padding: '2rem', border: '1px solid #eee', borderRadius: '8px' }}>
-              <button 
-                className="btn" 
-                onClick={convertToGif}
-                disabled={isProcessing || !isLoaded}
-                style={{ width: '100%', position: 'relative', overflow: 'hidden' }}
-              >
-                {isProcessing && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    height: '100%',
-                    width: `${progress}%`,
-                    backgroundColor: 'rgba(255,255,255,0.2)',
-                    transition: 'width 0.2s'
-                  }}></div>
-                )}
-                <span style={{ position: 'relative', zIndex: 1 }}>
-                  {isProcessing ? `Converting to GIF... ${progress}%` : 'Convert to GIF'}
-                </span>
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <div style={{ padding: '3rem', border: '1px solid #e0e0e0', borderRadius: '12px', marginTop: '2rem', textAlign: 'center' }}>
-          <h2>GIF Created Successfully!</h2>
-          
-          <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
-            <img 
-              src={processedGifUrl} 
-              alt="Generated GIF preview" 
-              style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} 
-            />
-          </div>
-
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <a 
-              href={processedGifUrl} 
-              download={`converted_${file.name.split('.')[0]}.gif`} 
-              className="btn"
-            >
-              Download GIF
-            </a>
-            <button 
-              className="btn" 
-              style={{ backgroundColor: '#666' }}
-              onClick={() => {
-                setProcessedGifUrl(null);
-                setFile(null);
-              }}
-            >
-              Convert Another Video
-            </button>
-          </div>
+            Download GIF
+          </a>
         </div>
       )}
-      
+
       <div style={{ marginTop: '3rem' }}>
-        <Link to="/" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>&larr; Back to fileverze Dashboard</Link>
+        <Link to="/" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>&larr; Back to Dashboard</Link>
       </div>
     </div>
   );

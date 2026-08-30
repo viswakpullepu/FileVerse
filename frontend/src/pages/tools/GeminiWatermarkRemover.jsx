@@ -3,6 +3,7 @@ import { removeWatermarkFromImage } from '@pilio/gemini-watermark-remover';
 import { Link } from 'react-router-dom';
 import { useFileContext } from '../../context/FileContext';
 import { Sparkles, Download, CheckCircle, RefreshCw, AlertCircle, Image as ImageIcon, Sliders } from 'lucide-react';
+import { createTrackedObjectURL, cleanupComponentMemory } from '../../utils/memoryManager';
 
 // Universal helper to get DataURL or Blob URL from HTMLCanvasElement or OffscreenCanvas
 async function getCanvasOutputUrl(canvas) {
@@ -29,7 +30,7 @@ async function getCanvasOutputUrl(canvas) {
 }
 
 export default function GeminiWatermarkRemover() {
-  const { sharedFile } = useFileContext();
+  const { sharedFile, clearFile } = useFileContext();
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -43,16 +44,22 @@ export default function GeminiWatermarkRemover() {
   useEffect(() => {
     if (sharedFile && (sharedFile.type?.startsWith('image/') || /\.(png|jpe?g|webp|bmp)$/i.test(sharedFile.name))) {
       loadFile(sharedFile);
+      clearFile();
     }
-  }, [sharedFile]);
+
+    return () => {
+      cleanupComponentMemory('gemini-watermark-remover');
+    };
+  }, [sharedFile, clearFile]);
 
   const loadFile = (selectedFile) => {
+    cleanupComponentMemory('gemini-watermark-remover');
     setFile(selectedFile);
     setResultDataUrl(null);
     setMetaInfo(null);
     setErrorMsg('');
 
-    const url = URL.createObjectURL(selectedFile);
+    const url = createTrackedObjectURL(selectedFile, 'gemini-watermark-remover');
     setPreviewUrl(url);
   };
 
