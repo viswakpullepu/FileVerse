@@ -1,6 +1,6 @@
 # ==============================================================================
 # FileVerze robots.txt — Generative Engine Optimization (GEO) & Search Crawlers
-# https://fileverze.com
+# https://fileverze.vercel.app
 # ==============================================================================
 
 User-agent: *
@@ -47,4 +47,4 @@ User-agent: Bytespider
 Allow: /
 
 # Sitemaps & LLM Discovery
-Sitemap: https://fileverze.com/sitemap.xml
+Sitemap: https://fileverze.vercel.app/sitemap.xml
