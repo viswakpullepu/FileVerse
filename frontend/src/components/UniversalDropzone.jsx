@@ -656,12 +656,17 @@ export default function UniversalDropzone() {
           ref={fileInputRef}
           type="file"
           style={{ display: 'none' }}
-          onChange={(e) => e.target.files?.[0] && triggerLockAnimation(e.target.files[0])}
+          onClick={(e) => { e.target.value = ''; }}
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              triggerLockAnimation(e.target.files[0]);
+            }
+          }}
         />
 
         {/* INITIAL STATE: Centralized Dropzone */}
         {!activeFile ? (
-          <div>
+          <div style={{ pointerEvents: 'auto' }}>
             <div style={{
               width: '72px',
               height: '72px',
@@ -699,26 +704,42 @@ export default function UniversalDropzone() {
             </p>
 
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                fileInputRef.current?.click();
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = '';
+                  fileInputRef.current.click();
+                }
               }}
               style={{
                 background: '#111827',
                 color: '#ffffff',
                 border: 'none',
-                padding: '0.85rem 2rem',
-                borderRadius: '8px',
+                padding: '0.95rem 2.4rem',
+                borderRadius: '10px',
                 fontWeight: 700,
-                fontSize: '0.95rem',
+                fontSize: '0.98rem',
                 cursor: 'pointer',
-                transition: 'background 0.15s, transform 0.1s',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)'
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = '#000000'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#111827'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = '#000000';
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#111827';
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.12)';
+              }}
             >
-              Browse Computer
+              <UploadCloud size={18} />
+              <span>Browse Computer</span>
             </button>
           </div>
         ) : (
