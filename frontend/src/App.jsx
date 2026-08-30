@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid, Menu, X } from 'lucide-react';
 import SEO from './components/SEO';
+import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
 import MergePDF from './pages/tools/MergePDF';
@@ -343,7 +344,7 @@ function App() {
               ALL TOOLS <ChevronDown size={14} />
               {activeDropdown === 'all' && (
                 <div className="dropdown-menu">
-                  <Link to="/" className="dropdown-item" onClick={closeDropdown}>View Dashboard</Link>
+                  <Link to="/app" className="dropdown-item" onClick={closeDropdown}>All Tools Workspace</Link>
                   <Link to="/faq" className="dropdown-item" onClick={closeDropdown}>FAQ & Knowledge Base</Link>
                   <Link to="/json_to_csv" className="dropdown-item" onClick={closeDropdown}>JSON to CSV</Link>
                   <Link to="/convert/3d" className="dropdown-item" onClick={closeDropdown}>3D & CAD</Link>
@@ -352,7 +353,10 @@ function App() {
               )}
             </div>
 
-            {/* FAQ DIRECT NAV */}
+            {/* DIRECT NAV LINKS */}
+            <Link to="/app" className="nav-item" style={{ textDecoration: 'none', color: '#111827', fontWeight: 600 }}>
+              TOOLS STUDIO
+            </Link>
             <Link to="/faq" className="nav-item" style={{ textDecoration: 'none', color: '#111827', fontWeight: 600 }}>
               FAQ
             </Link>
@@ -360,8 +364,8 @@ function App() {
         </div>
 
         <div className="header-right">
-          <Link to="/faq" style={{ textDecoration: 'none', color: '#111827', fontSize: '0.85rem', fontWeight: 700, padding: '0.4rem 0.85rem', borderRadius: '6px', background: '#f8fafc', border: '1px solid #e2e8f0', marginRight: '0.5rem' }}>
-            Help & FAQ
+          <Link to="/app" style={{ textDecoration: 'none', color: '#ffffff', fontSize: '0.85rem', fontWeight: 700, padding: '0.45rem 1rem', borderRadius: '6px', background: '#111827', marginRight: '0.5rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            Open Studio →
           </Link>
           <button className="btn-grid"><Grid size={24} color="#555" /></button>
         </div>
@@ -369,7 +373,11 @@ function App() {
 
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/app" element={<Dashboard />} />
+          <Route path="/tools" element={<Dashboard />} />
+          <Route path="/all_tools" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/convert/:categoryId" element={<UniversalConverter />} />
           <Route path="/merge_pdf" element={<MergePDF />} />

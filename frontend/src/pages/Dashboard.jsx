@@ -139,11 +139,24 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="dashboard-container" style={{ padding: 0, maxWidth: '100%' }}>
-      {/* PHASE 2: ANIMATION-INTENSIVE HERO SECTION */}
-      <HeroSection />
+    <div className="dashboard-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' }}>
+      {/* STUDIO WORKSPACE HEADER */}
+      <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.35rem 0.9rem', background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '9999px', color: '#475569', fontSize: '0.82rem', fontWeight: 700, marginBottom: '0.75rem' }}>
+          <span>100% In-Browser Studio • 50+ Tools</span>
+        </div>
+        <h1 style={{ fontSize: 'clamp(1.8rem, 3.5vw, 2.5rem)', fontWeight: 850, letterSpacing: '-0.03em', color: '#111827', margin: 0 }}>
+          {isReturningUser ? 'Welcome Back to Your Workspace' : 'File Tools Studio'}
+        </h1>
+        <p style={{ fontSize: '1rem', color: '#64748b', maxWidth: '600px', margin: '0.5rem auto 0 auto' }}>
+          Drop any file below or select a dedicated tool. Everything processes locally in your browser memory.
+        </p>
+      </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' }} id="all-tools-grid">
+      {/* UNIVERSAL SMART DROPZONE */}
+      <UniversalDropzone />
+
+      <div style={{ marginTop: '3rem' }} id="all-tools-grid">
         {/* RECENTLY USED SECTION */}
       {!isLoading && recentTools.length > 0 && (
         <>
