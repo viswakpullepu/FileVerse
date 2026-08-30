@@ -3,6 +3,7 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid, Menu, X } from 'lucide-react';
 import Lenis from 'lenis';
 import SEO from './components/SEO';
+import GlobalDropOverlay from './components/GlobalDropOverlay';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
@@ -146,6 +147,9 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Universal Full-Screen Drop Overlay */}
+      <GlobalDropOverlay />
+
       {/* Dynamic SEO Meta & Title Manager */}
       <SEO />
 

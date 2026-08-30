@@ -123,10 +123,15 @@ export default function MergePDF() {
                 className="btn" 
                 onClick={mergePdfs}
                 disabled={files.length < 2 || isMerging}
-                style={{ width: '100%', marginTop: '1rem' }}
+                style={{ width: '100%', marginTop: '1rem', opacity: files.length < 2 ? 0.6 : 1, cursor: files.length < 2 ? 'not-allowed' : 'pointer' }}
               >
                 {isMerging ? 'Merging...' : 'Merge PDFs'}
               </button>
+              {files.length === 1 && (
+                <p style={{ color: '#d97706', fontSize: '0.88rem', marginTop: '0.75rem', fontWeight: 600, textAlign: 'center' }}>
+                  ⚠️ Please add at least one more PDF file to enable merging.
+                </p>
+              )}
             </div>
           )}
         </>

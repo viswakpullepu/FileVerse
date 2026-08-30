@@ -1,8 +1,34 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function WordCharacterCounter() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [inputText, setInputText] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setInputText(content);
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setInputText(e.target?.result || '');
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const getStats = () => {
     const text = inputText;

@@ -1,11 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function JwtDecoder() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [jwt, setJwt] = useState('');
   const [header, setHeader] = useState('');
   const [payload, setPayload] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setJwt(content.trim());
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setJwt((e.target?.result || '').trim());
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const decodeJWT = (token) => {
     setErrorMsg('');

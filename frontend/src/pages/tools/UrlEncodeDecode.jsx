@@ -1,11 +1,37 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function UrlEncodeDecode() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
   const [mode, setMode] = useState('encode'); // 'encode' or 'decode'
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setInputText(content);
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setInputText(e.target?.result || '');
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const processText = () => {
     setErrorMsg('');

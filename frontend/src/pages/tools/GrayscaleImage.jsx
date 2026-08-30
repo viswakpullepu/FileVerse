@@ -1,12 +1,24 @@
-import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function GrayscaleImage() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedImageUrl, setProcessedImageUrl] = useState(null);
   const canvasRef = useRef(null);
   const imgRef = useRef(new Image());
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      handleFileChange({ target: { files: [stagedFile] } });
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

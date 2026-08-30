@@ -1,13 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function UnlockPDF() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [password, setPassword] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedPdfUrl, setProcessedPdfUrl] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setProcessedPdfUrl(null);
+      setErrorMsg('');
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

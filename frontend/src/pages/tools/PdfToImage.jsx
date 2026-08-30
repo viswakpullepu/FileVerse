@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
+import { useFileContext } from '../../context/FileContext';
 
 export default function PdfToImage() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [images, setImages] = useState([]);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setErrorMsg('');
+      setImages([]);
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     // Set worker src

@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function ExtractVideoFrames() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [frameCount, setFrameCount] = useState(5);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -11,6 +14,16 @@ export default function ExtractVideoFrames() {
   const [extractedFrames, setExtractedFrames] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setExtractedFrames([]);
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     load();

@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument } from 'pdf-lib';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function ImageToPDF() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [files, setFiles] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedPdfUrl, setProcessedPdfUrl] = useState(null);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFiles([stagedFile]);
+      setProcessedPdfUrl(null);
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files.length > 0) {

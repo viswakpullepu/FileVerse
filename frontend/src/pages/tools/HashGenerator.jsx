@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function HashGenerator() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [inputText, setInputText] = useState('');
   const [file, setFile] = useState(null);
   const [hashResult, setHashResult] = useState({
@@ -12,6 +15,23 @@ export default function HashGenerator() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [mode, setMode] = useState('text'); // 'text' or 'file'
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setMode('file');
+      setIsProcessing(true);
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        await generateHash(event.target.result);
+        setIsProcessing(false);
+        clearFile();
+      };
+      reader.readAsArrayBuffer(stagedFile);
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   // Using Web Crypto API for secure hashing
   const generateHash = async (buffer) => {

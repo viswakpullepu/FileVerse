@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PDFDocument, degrees } from 'pdf-lib';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function RotatePDF() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [rotation, setRotation] = useState(90);
   const [isProcessing, setIsProcessing] = useState(false);
   const [processedPdfUrl, setProcessedPdfUrl] = useState(null);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setProcessedPdfUrl(null);
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {

@@ -1,12 +1,38 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import bcrypt from 'bcryptjs';
+import { useFileContext } from '../../context/FileContext';
 
 export default function BcryptGenerator() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [password, setPassword] = useState('');
   const [saltRounds, setSaltRounds] = useState(10);
   const [hash, setHash] = useState('');
   const [isHashing, setIsHashing] = useState(false);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setPassword(content.trim());
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setPassword((e.target?.result || '').trim());
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   // Checker State
   const [checkPassword, setCheckPassword] = useState('');

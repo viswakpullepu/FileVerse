@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FFmpeg } from '@ffmpeg/ffmpeg';
 import { fetchFile, toBlobURL } from '@ffmpeg/util';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function VideoToGif() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -11,6 +14,16 @@ export default function VideoToGif() {
   const [isLoaded, setIsLoaded] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef(null);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setProcessedGifUrl(null);
+      clearFile();
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     load();
