@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import HeroSection from '../components/HeroSection';
+import MagneticButton from '../components/MagneticButton';
 import { 
   ShieldCheck, Zap, Lock, Cpu, Sparkles, 
   ArrowRight, Check, CheckCircle, FileText, 
@@ -356,42 +357,32 @@ export default function LandingPage() {
             No installation, no accounts, and no data leaks. Launch the studio to access all 50+ tools in seconds.
           </p>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link
-              to="/all_tools"
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
+            <MagneticButton
+              to="/app"
+              variant="secondary"
+              icon={ArrowRight}
               style={{
                 background: '#FFFFFF',
                 color: '#111827',
-                padding: '1rem 2.5rem',
-                borderRadius: '10px',
-                fontWeight: 750,
-                fontSize: '1rem',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 14px rgba(255,255,255,0.2)'
+                padding: '1.05rem 2.5rem'
               }}
             >
-              <span>Launch Studio & Browse All Tools</span>
-              <ArrowRight size={18} />
-            </Link>
+              Launch Studio & Browse All Tools
+            </MagneticButton>
 
-            <Link
+            <MagneticButton
               to="/faq"
+              variant="glass"
               style={{
-                background: 'rgba(255, 255, 255, 0.1)',
+                background: 'rgba(255, 255, 255, 0.12)',
                 color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                padding: '1rem 2rem',
-                borderRadius: '10px',
-                fontWeight: 650,
-                fontSize: '1rem',
-                textDecoration: 'none'
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                padding: '1.05rem 2.2rem'
               }}
             >
               Read Security FAQ
-            </Link>
+            </MagneticButton>
           </div>
         </div>
       </section>

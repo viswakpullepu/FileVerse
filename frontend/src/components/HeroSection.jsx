@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ArrowRight, ShieldCheck, Zap, Lock, Sparkles, ChevronDown } from 'lucide-react';
 import UniversalDropzone from './UniversalDropzone';
+import MagneticButton from './MagneticButton';
 
 export default function HeroSection() {
   const canvasRef = useRef(null);
@@ -290,77 +291,30 @@ export default function HeroSection() {
           Powered by WebAssembly, WebGL, and HTML5 Canvas — zero file size limits, zero sign-ups, and absolute privacy.
         </p>
 
-        {/* Action Buttons */}
+        {/* Action Buttons with True Magnetic Cursor Interaction */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '1rem',
+          gap: '1.25rem',
           flexWrap: 'wrap',
           marginBottom: '3.5rem'
         }}>
-          <a
-            href="/app"
-            style={{
-              padding: '0.9rem 2.2rem',
-              borderRadius: '10px',
-              background: '#111827',
-              color: '#FFFFFF',
-              border: '1px solid #111827',
-              fontSize: '0.98rem',
-              fontWeight: 650,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              textDecoration: 'none',
-              transition: 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-              boxShadow: '0 4px 14px rgba(17, 24, 39, 0.12)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 24px rgba(17, 24, 39, 0.18)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 14px rgba(17, 24, 39, 0.12)';
-            }}
+          <MagneticButton
+            to="/app"
+            variant="primary"
+            icon={ArrowRight}
           >
-            <span>Launch Studio (50+ Tools)</span>
-            <ArrowRight size={18} />
-          </a>
+            Launch Studio (50+ Tools)
+          </MagneticButton>
 
-          <a
-            href="/faq"
-            style={{
-              padding: '0.9rem 2rem',
-              borderRadius: '10px',
-              background: 'rgba(255, 255, 255, 0.9)',
-              color: '#1E293B',
-              border: '1px solid #CBD5E1',
-              fontSize: '0.98rem',
-              fontWeight: 600,
-              textDecoration: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              backdropFilter: 'blur(10px)',
-              transition: 'background 0.2s, border-color 0.2s, transform 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#FFFFFF';
-              e.currentTarget.style.borderColor = '#94A3B8';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
-              e.currentTarget.style.borderColor = '#CBD5E1';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
+          <MagneticButton
+            to="/faq"
+            variant="glass"
+            icon={ShieldCheck}
           >
-            <ShieldCheck size={18} color="#4E8773" />
-            <span>How Local Privacy Works</span>
-          </a>
+            How Local Privacy Works
+          </MagneticButton>
         </div>
 
         {/* Embedded Universal Smart Dropzone with Secure Lock Physics */}
