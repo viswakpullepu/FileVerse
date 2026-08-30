@@ -1,302 +1,302 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
-// Comprehensive metadata catalog for all routes on FileVerze
+// Comprehensive, High-Intent 2026 Keyword Catalog for all routes on FileVerze
 const ROUTE_SEO_MAP = {
   '/': {
-    title: 'FileVerze — Free 100% In-Browser File Converter & Privacy Powerhouse',
-    description: 'Convert, compress, and edit PDFs, images, videos, 3D models, fonts, subtitles, and spreadsheets 100% locally in your browser. Zero server uploads.',
-    keywords: 'file converter, universal dropzone, private file converter, local file tools, pdf tools, image tools'
+    title: 'FileVerze — Best Free Online File Converter (No Sign Up, 100% In-Browser Privacy)',
+    description: 'Convert, compress, and edit PDFs, images, videos, 3D STL models, fonts, subtitles, and spreadsheets 100% locally in your browser. Free, no sign up, zero cloud upload.',
+    keywords: 'best free online file converter, free online file converter no sign up, pdf to word converter free, compress pdf online, remove background from image online free, 100% private file converter, in-browser file tools, batch file converter'
   },
   '/all_tools': {
-    title: 'All Tools Catalog — FileVerze',
-    description: 'Browse all 50+ free in-browser file conversion, optimization, dev, and media tools.',
-    keywords: 'all tools, file tools, free converters, pdf tools, image tools, dev tools'
+    title: 'All Free File Tools & Converters (50+ In-Browser Utilities) — FileVerze',
+    description: 'Browse all 50+ free in-browser file conversion, optimization, dev, and media tools with zero cloud uploads.',
+    keywords: 'all file tools, free online converters, pdf tools, image tools, dev tools, video tools, 3d tools'
   },
   '/universal_converter': {
-    title: 'Universal File Converter — FileVerze',
-    description: 'Drop any document, image, video, 3D model, or spreadsheet to detect and convert natively.',
-    keywords: 'universal converter, smart dropzone, file format detector'
+    title: 'Universal File Converter Online (Auto Format Detection, No Upload) — FileVerze',
+    description: 'Drop any document, image, video, 3D model, or spreadsheet to instantly detect formats and convert locally in browser memory.',
+    keywords: 'universal file converter, smart dropzone, auto file detector, universal converter online free'
   },
   '/faq': {
-    title: 'Frequently Asked Questions & Knowledge Base — FileVerze',
+    title: 'Frequently Asked Questions & Security Architecture — FileVerze',
     description: 'Learn how FileVerze processes PDFs, images, videos, 3D models, and office documents 100% locally in your browser with zero server uploads.',
-    keywords: 'fileverze faq, private file converter faq, zero upload conversion, client side file tools questions'
+    keywords: 'fileverze faq, private file converter faq, zero upload conversion, client side file tools questions, gdpr compliant file converter'
   },
 
-  // PDF
+  // PDF Tools
   '/merge_pdf': {
-    title: 'Merge PDF Online (Free & Private) — FileVerze',
-    description: 'Combine multiple PDF files into one single document locally in your browser. 100% private.',
-    keywords: 'merge pdf, combine pdf, join pdf files, free pdf merger'
+    title: 'Merge PDF Online Free (No Sign Up, Unlimited Files) — FileVerze',
+    description: 'Combine multiple PDF files into one single document locally in your browser. 100% free, private, and instant with zero file size limits.',
+    keywords: 'merge pdf online free, combine pdf no sign up, join pdf files free, unlimited pdf merger'
   },
   '/split_pdf': {
-    title: 'Split PDF Online (Free & Fast) — FileVerze',
-    description: 'Separate pages or extract page ranges from PDF files with instant local processing.',
-    keywords: 'split pdf, extract pdf pages, separate pdf'
+    title: 'Split PDF Online Free (Extract Pages & Ranges) — FileVerze',
+    description: 'Separate pages or extract page ranges from PDF files with instant local processing and no cloud uploads.',
+    keywords: 'split pdf online free, extract pdf pages, separate pdf pages, free pdf splitter'
   },
   '/pdf_to_word': {
-    title: 'PDF to Word (.docx) Converter — FileVerze',
-    description: 'Convert PDF documents into editable Microsoft Word (.docx) files locally in your browser.',
-    keywords: 'pdf to word, pdf to docx, convert pdf to word, editable word document'
+    title: 'PDF to Word Converter Free No Sign Up (Convert PDF to DOCX Online) — FileVerze',
+    description: 'Convert PDF documents into editable Microsoft Word (.docx) files locally in your browser. Preserves layouts, tables, and text formatting.',
+    keywords: 'pdf to word converter free, convert pdf to docx online, pdf to word no sign up, editable word document from pdf, scanned pdf to word'
   },
   '/word_to_pdf': {
-    title: 'Word to PDF Converter (.docx to PDF) — FileVerze',
-    description: 'Convert Word DOCX documents into clean, paginated vector PDF files with zero server uploads.',
-    keywords: 'word to pdf, docx to pdf, convert word document'
+    title: 'Word to PDF Converter Online Free (.docx to PDF Vector) — FileVerze',
+    description: 'Convert Word DOCX documents into clean, paginated vector PDF files with zero server uploads and 100% privacy.',
+    keywords: 'word to pdf converter free, convert docx to pdf online, word to pdf no sign up, doc to pdf converter'
   },
   '/compress_pdf': {
-    title: 'Compress PDF Online (Shrink PDF Size) — FileVerze',
-    description: 'Reduce PDF file size with smart image optimization and metadata compaction entirely in-browser.',
-    keywords: 'compress pdf, shrink pdf, reduce pdf size, optimize pdf'
+    title: 'Compress PDF Online Free (Reduce PDF Size Without Quality Loss) — FileVerze',
+    description: 'Shrink PDF file sizes by up to 80% with smart canvas image optimization and metadata compaction entirely in-browser.',
+    keywords: 'compress pdf online free, reduce pdf size without quality loss, shrink pdf file, optimize pdf online'
   },
   '/excel_to_pdf': {
-    title: 'Excel to PDF Converter (.xlsx to PDF Table) — FileVerze',
-    description: 'Convert Excel spreadsheets (.xlsx, .xls) into clean landscape PDF tables natively.',
-    keywords: 'excel to pdf, xlsx to pdf, spreadsheet to pdf table'
+    title: 'Excel to PDF Converter Online Free (.xlsx to PDF Table) — FileVerze',
+    description: 'Convert Excel spreadsheets (.xlsx, .xls) into clean formatted landscape PDF tables natively in browser memory.',
+    keywords: 'excel to pdf converter, xlsx to pdf table, convert spreadsheet to pdf online free'
   },
   '/powerpoint_to_pdf': {
-    title: 'PowerPoint to PDF Converter (.pptx to PDF) — FileVerze',
-    description: 'Convert PowerPoint slide presentations into clean 16:9 landscape PDF documents in your browser.',
-    keywords: 'powerpoint to pdf, pptx to pdf, ppt to pdf, presentation slides to pdf'
+    title: 'PowerPoint to PDF Converter Online Free (.pptx to Slide PDF) — FileVerze',
+    description: 'Convert PowerPoint slide presentations into clean 16:9 landscape PDF documents directly in your browser.',
+    keywords: 'powerpoint to pdf online, pptx to pdf converter free, convert presentation to pdf'
   },
   '/pdf_to_image': {
-    title: 'PDF to Image Converter (PDF to JPG/PNG) — FileVerze',
-    description: 'Convert every page of a PDF document into high-resolution JPG images instantly.',
-    keywords: 'pdf to image, pdf to jpg, pdf to png, render pdf pages'
+    title: 'PDF to JPG Converter Online Free (High Resolution PDF to Image) — FileVerze',
+    description: 'Convert every page of a PDF document into crisp, high-resolution JPG images instantly in your browser.',
+    keywords: 'pdf to jpg converter free, pdf to image online, convert pdf pages to photos'
   },
   '/image_to_pdf': {
-    title: 'Image to PDF Converter — FileVerze',
-    description: 'Convert JPG, PNG, and WebP images into a single PDF document.',
-    keywords: 'image to pdf, jpg to pdf, png to pdf'
+    title: 'Image to PDF Converter Free (JPG, PNG, WebP to PDF) — FileVerze',
+    description: 'Convert and combine JPG, PNG, and WebP images into a single clean PDF document in seconds.',
+    keywords: 'image to pdf converter, jpg to pdf free, png to pdf online'
   },
   '/remove_pages': {
-    title: 'Remove PDF Pages — FileVerze',
-    description: 'Delete specific unwanted pages from your PDF documents.',
-    keywords: 'remove pdf pages, delete pages from pdf'
+    title: 'Remove PDF Pages Online Free (Delete Unwanted Pages) — FileVerze',
+    description: 'Delete specific unwanted pages from your PDF documents instantly.',
+    keywords: 'remove pdf pages free, delete pages from pdf online'
   },
   '/extract_pages': {
-    title: 'Extract PDF Pages — FileVerze',
+    title: 'Extract PDF Pages Online Free — FileVerze',
     description: 'Extract select pages into a new independent PDF document.',
-    keywords: 'extract pdf pages, split pdf page range'
+    keywords: 'extract pdf pages online, split select pages pdf'
   },
   '/rotate_pdf': {
-    title: 'Rotate PDF Online — FileVerze',
-    description: 'Rotate individual pages or entire PDF documents permanently.',
-    keywords: 'rotate pdf, flip pdf pages, change pdf orientation'
+    title: 'Rotate PDF Online Free (Permanent 90°/180°/270° Flip) — FileVerze',
+    description: 'Rotate individual pages or entire PDF documents permanently with instant download.',
+    keywords: 'rotate pdf online free, flip pdf orientation, save rotated pdf'
   },
   '/add_page_numbers': {
-    title: 'Add Page Numbers to PDF — FileVerze',
+    title: 'Add Page Numbers to PDF Online Free — FileVerze',
     description: 'Stamp custom page numbering into headers and footers of PDF documents.',
-    keywords: 'add page numbers pdf, stamp page numbers'
+    keywords: 'add page numbers to pdf, stamp page numbers online'
   },
   '/add_watermark': {
-    title: 'Add Watermark to PDF — FileVerze',
-    description: 'Stamp custom text or image watermarks onto PDF pages with opacity controls.',
-    keywords: 'watermark pdf, stamp pdf watermark'
+    title: 'Add Watermark to PDF Online Free — FileVerze',
+    description: 'Stamp custom text or image watermarks onto PDF pages with transparency controls.',
+    keywords: 'add watermark to pdf free, watermark pdf online'
   },
   '/unlock_pdf': {
-    title: 'Unlock PDF (Remove Password) — FileVerze',
-    description: 'Remove restrictions and passwords from encrypted PDF files.',
-    keywords: 'unlock pdf, remove pdf password'
+    title: 'Unlock PDF Online Free (Remove Password & Restrictions) — FileVerze',
+    description: 'Remove restrictions and passwords from encrypted PDF files with zero cloud uploads.',
+    keywords: 'unlock pdf online free, remove pdf password, decrypt pdf'
   },
   '/protect_pdf': {
-    title: 'Protect PDF (Password Encrypt) — FileVerze',
-    description: 'Encrypt and password-protect your confidential PDF documents.',
-    keywords: 'protect pdf, password protect pdf, encrypt pdf'
+    title: 'Protect PDF Online Free (Password Encrypt PDF) — FileVerze',
+    description: 'Encrypt and password-protect your confidential PDF documents with strong encryption.',
+    keywords: 'protect pdf online free, password protect pdf, encrypt pdf file'
   },
 
-  // Image
+  // Image & AI Tools
   '/remove_background': {
-    title: 'AI Background Remover (100% In-Browser) — FileVerze',
-    description: 'Remove background from images and export transparent PNGs directly in your browser. Fast, private, and offline.',
-    keywords: 'remove background, background remover, transparent png, remove bg'
+    title: 'Remove Background from Image Online Free (HD Transparent PNG) — FileVerze',
+    description: 'Isolate subjects and export transparent PNGs directly in your browser with real-time tolerance tuning. Fast, private, and 100% offline.',
+    keywords: 'remove background from image online free, transparent png cutout, image background remover free no sign up, remove bg hd'
   },
   '/compress_image': {
-    title: 'Compress Image (JPG, PNG, WebP) — FileVerze',
-    description: 'Compress images to reduce file size while preserving high visual quality.',
-    keywords: 'compress image, shrink image size, optimize jpg, optimize png'
+    title: 'Image Compressor Online Free (Compress JPG, PNG, WebP) — FileVerze',
+    description: 'Reduce image file size significantly while preserving high visual quality and custom resolution.',
+    keywords: 'image compressor online free, reduce image size, compress jpg, compress png, optimize image'
   },
   '/ocr_extractor': {
-    title: 'OCR Text Extractor (Image to Text) — FileVerze',
-    description: 'Extract text from scanned images and documents using in-browser neural AI (Tesseract.js).',
-    keywords: 'ocr extractor, image to text, extract text from photo, tesseract ocr'
+    title: 'OCR Text Extractor Online Free (Scanned Image to Text & Word) — FileVerze',
+    description: 'Extract text from scanned images and documents using in-browser neural AI (Tesseract.js WASM) with zero server uploads.',
+    keywords: 'ocr text extractor online, image to text free, scanned pdf to word with ocr, extract text from photo'
   },
   '/gemini_watermark_remover': {
-    title: 'Gemini Watermark Remover — FileVerze',
-    description: 'Cleanly remove visible Google Gemini watermarks from AI-generated images.',
-    keywords: 'gemini watermark remover, remove watermark ai'
+    title: 'Gemini Watermark Remover Online Free — FileVerze',
+    description: 'Cleanly remove visible Google Gemini AI watermarks from images natively in your browser.',
+    keywords: 'gemini watermark remover, remove ai watermark free, clean image watermark'
   },
   '/convert_image': {
-    title: 'Convert Image Format (PNG, JPG, WebP) — FileVerze',
-    description: 'Convert between PNG, JPG, and modern WebP formats in seconds.',
-    keywords: 'convert image, png to jpg, jpg to png, convert to webp'
+    title: 'Image Format Converter Online (PNG, JPG, WebP, SVG, BMP) — FileVerze',
+    description: 'Convert between PNG, JPG, WebP, SVG, BMP, and ICO formats instantly in your browser.',
+    keywords: 'convert image format, png to jpg, jpg to png, convert to webp free'
   },
   '/resize_image': {
-    title: 'Resize Image Dimensions — FileVerze',
-    description: 'Resize image dimensions by pixels or percentage scale.',
-    keywords: 'resize image, scale photo, change image resolution'
+    title: 'Resize Image Dimensions Online Free — FileVerze',
+    description: 'Resize image dimensions by exact pixels or percentage scale.',
+    keywords: 'resize image online, scale photo dimensions, change image resolution'
   },
   '/rotate_image': {
-    title: 'Rotate Image Online — FileVerze',
-    description: 'Rotate images 90, 180, or 270 degrees.',
-    keywords: 'rotate image, flip photo'
+    title: 'Rotate Image Online Free — FileVerze',
+    description: 'Rotate images 90, 180, or 270 degrees instantly.',
+    keywords: 'rotate image online, flip photo'
   },
   '/grayscale_image': {
-    title: 'Grayscale Image Filter — FileVerze',
-    description: 'Convert color photos into clean black-and-white tonal images.',
-    keywords: 'grayscale image, black and white filter'
+    title: 'Grayscale Image Filter Online Free — FileVerze',
+    description: 'Convert color photos into clean black-and-white tonal pictures.',
+    keywords: 'grayscale image filter, black and white photo converter'
   },
   '/image_blur': {
-    title: 'Image Blur & Privacy Obscure — FileVerze',
-    description: 'Apply Gaussian blur to obscure sensitive details in pictures.',
-    keywords: 'blur image, redact photo, gaussian blur'
+    title: 'Image Blur & Redaction Tool Online Free — FileVerze',
+    description: 'Apply Gaussian blur to redact sensitive details in photos.',
+    keywords: 'blur image online, redact sensitive photo details'
   },
   '/bmp_to_png': {
-    title: 'BMP to PNG Converter — FileVerze',
-    description: 'Convert legacy BMP bitmaps into modern compressed PNGs.',
-    keywords: 'bmp to png, convert bmp'
+    title: 'BMP to PNG Converter Online Free — FileVerze',
+    description: 'Convert legacy uncompressed BMP files into optimized web PNGs.',
+    keywords: 'bmp to png converter, convert bitmap to png'
   },
   '/svg_to_png': {
-    title: 'SVG to PNG Converter — FileVerze',
+    title: 'SVG to PNG Converter Online Free (High Resolution Rasterizer) — FileVerze',
     description: 'Rasterize vector SVG files into high-resolution PNG images.',
-    keywords: 'svg to png, rasterize svg'
+    keywords: 'svg to png converter free, rasterize svg vector'
   },
   '/image_to_ico': {
-    title: 'Image to ICO Favicon Generator — FileVerze',
-    description: 'Convert images to multi-size Windows icon (.ico) favicons.',
-    keywords: 'image to ico, favicon generator, create ico'
+    title: 'Favicon Generator (Image to ICO Online Free) — FileVerze',
+    description: 'Convert images to multi-size Windows icon (.ico) favicons for websites.',
+    keywords: 'image to ico converter, favicon generator online free, create ico file'
   },
 
-  // Video
+  // Video Tools
   '/video_to_gif': {
-    title: 'Video to GIF Converter — FileVerze',
-    description: 'Convert video clips (MP4, WebM) into lightweight animated GIFs.',
-    keywords: 'video to gif, mp4 to gif, create gif from video'
+    title: 'Video to GIF Converter Online Free (MP4, WebM to Animated GIF) — FileVerze',
+    description: 'Convert video clips into lightweight, shareable animated GIFs with custom frame rate and sizing.',
+    keywords: 'video to gif converter online free, mp4 to gif, webm to gif, create animated gif from video'
   },
   '/video_to_audio': {
-    title: 'Extract Audio from Video (Video to MP3/WAV) — FileVerze',
-    description: 'Extract audio soundtracks directly from video files.',
-    keywords: 'video to audio, extract mp3, video to mp3'
+    title: 'Extract Audio from Video Online Free (Video to MP3/WAV) — FileVerze',
+    description: 'Extract audio soundtracks directly from video files without cloud uploads.',
+    keywords: 'video to audio converter, extract mp3 from video free, video to wav'
   },
   '/trim_video': {
-    title: 'Trim Video Online — FileVerze',
-    description: 'Cut and trim video segments right inside your browser.',
-    keywords: 'trim video, cut video, slice video'
+    title: 'Trim Video Online Free (Cut Video in Browser) — FileVerze',
+    description: 'Cut and trim video segments right inside your browser with millisecond precision.',
+    keywords: 'trim video online free, cut video in browser, slice video clips'
   },
   '/mute_video': {
-    title: 'Mute Video (Remove Audio Track) — FileVerze',
+    title: 'Mute Video Online Free (Remove Audio Track) — FileVerze',
     description: 'Strip audio tracks completely from video clips.',
-    keywords: 'mute video, remove sound from video'
+    keywords: 'mute video online free, remove sound from video'
   },
   '/change_video_speed': {
-    title: 'Change Video Speed (Slow Motion & Fast Forward) — FileVerze',
-    description: 'Speed up or slow down video playback frame rate.',
-    keywords: 'change video speed, slow motion video, speed up video'
+    title: 'Change Video Speed Online Free (Slow Motion & Fast Forward) — FileVerze',
+    description: 'Speed up or slow down video playback frame rates in browser memory.',
+    keywords: 'change video speed online free, slow motion video, speed up video'
   },
   '/extract_video_frames': {
-    title: 'Extract Video Frames (Video to JPG Sequence) — FileVerze',
-    description: 'Extract high-resolution image frames from video files.',
-    keywords: 'extract video frames, video to images'
+    title: 'Extract Video Frames Online Free (Video to JPG Sequence) — FileVerze',
+    description: 'Export all video frames as a sequence of high-resolution JPG images.',
+    keywords: 'extract video frames, video to images sequence'
   },
   '/reverse_video': {
-    title: 'Reverse Video Playback — FileVerze',
+    title: 'Reverse Video Online Free (Play Video Backwards) — FileVerze',
     description: 'Play video clips backwards from end to start.',
-    keywords: 'reverse video, play video backwards'
+    keywords: 'reverse video online free, play video backwards'
   },
   '/webm_to_mp4': {
-    title: 'WebM to MP4 Converter — FileVerze',
+    title: 'WebM to MP4 Converter Online Free — FileVerze',
     description: 'Convert WebM video clips into universally compatible MP4 format.',
-    keywords: 'webm to mp4, convert webm'
+    keywords: 'webm to mp4 converter free, convert webm video'
   },
 
-  // Phase 2
+  // 3D, GIS, Font & E-Book Tools
   '/threed_converter': {
-    title: '3D STL Viewport & Mesh Inspector — FileVerze',
-    description: 'Inspect 3D STL geometry in interactive WebGL viewport with wireframe, lighting, and polycount analysis.',
-    keywords: '3d viewer, stl viewer, stl converter, webgl 3d model'
+    title: '3D STL Viewer & Mesh Inspector Online Free (WebGL) — FileVerze',
+    description: 'Inspect 3D STL geometry in an interactive WebGL viewport with wireframe, lighting, and polycount analysis.',
+    keywords: '3d stl viewer online, webgl 3d model inspector, stl viewer free, inspect 3d mesh'
   },
   '/gis_converter': {
-    title: 'GIS Map Converter (GeoJSON ↔ KML) — FileVerze',
-    description: 'Convert between GeoJSON, Google Earth KML, and CSV map coordinates in your browser.',
-    keywords: 'gis converter, geojson to kml, kml to geojson, csv to geojson'
+    title: 'GIS Map Converter Online Free (GeoJSON ↔ Google Earth KML) — FileVerze',
+    description: 'Convert between GeoJSON, Google Earth KML, and CSV map coordinates in your browser with zero server uploads.',
+    keywords: 'gis map converter, geojson to kml, kml to geojson, csv coordinates to geojson'
   },
   '/font_converter': {
-    title: 'Font Inspector & @font-face Generator (TTF, OTF, WOFF) — FileVerze',
-    description: 'Inspect typography glyphs, test custom strings in real-time, and generate @font-face CSS snippets.',
-    keywords: 'font converter, ttf to woff, opentype font inspector, font face css'
+    title: 'Font Inspector & @font-face CSS Generator (TTF, OTF, WOFF) — FileVerze',
+    description: 'Inspect typography glyphs, test custom strings in real-time, and generate copy-ready @font-face CSS declarations.',
+    keywords: 'font inspector online, ttf to woff converter, opentype glyph viewer, font face css generator'
   },
   '/ebook_converter': {
-    title: 'EPUB E-Book Reader & Builder — FileVerze',
-    description: 'Extract EPUB chapters, read books in browser, and compile digital EPUB 3 publications.',
-    keywords: 'ebook converter, epub reader, epub builder, extract epub'
+    title: 'EPUB E-Book Reader & Builder Online Free — FileVerze',
+    description: 'Extract EPUB chapters, read books in your browser, and compile standard digital EPUB 3 publications.',
+    keywords: 'epub reader online free, epub builder, ebook converter, extract epub chapters'
   },
   '/subtitle_converter': {
-    title: 'Subtitle Converter (SRT ↔ VTT ↔ ASS) — FileVerze',
-    description: 'Convert subtitle files between SubRip (.srt), WebVTT (.vtt), and ASS formats with timing offset sync.',
-    keywords: 'subtitle converter, srt to vtt, vtt to srt, subtitle sync offset'
+    title: 'Subtitle Converter Online Free (SRT ↔ VTT ↔ ASS with Sync Shift) — FileVerze',
+    description: 'Convert subtitle files between SubRip (.srt), WebVTT (.vtt), and ASS formats with millisecond timing offset sync.',
+    keywords: 'subtitle converter online free, srt to vtt, vtt to srt, subtitle timing sync offset'
   },
 
-  // Dev & Data
+  // Dev & Data Tools
   '/json_formatter': {
-    title: 'JSON Formatter & Validator — FileVerze',
-    description: 'Beautify, validate, and minify JSON data structures.',
-    keywords: 'json formatter, format json, beautify json, minify json'
+    title: 'JSON Formatter & Validator Online Free — FileVerze',
+    description: 'Beautify, validate, format, and minify JSON data structures.',
+    keywords: 'json formatter online free, beautify json, minify json, json validator'
   },
   '/csv_to_json': {
-    title: 'CSV to JSON Converter — FileVerze',
-    description: 'Convert spreadsheet CSV data into formatted JSON arrays and objects.',
-    keywords: 'csv to json, convert spreadsheet to json'
+    title: 'CSV to JSON Converter Online Free — FileVerze',
+    description: 'Convert spreadsheet CSV tables into structured JSON arrays and objects.',
+    keywords: 'csv to json converter free, spreadsheet to json online'
   },
   '/json_to_csv': {
-    title: 'JSON to CSV Converter — FileVerze',
+    title: 'JSON to CSV Converter Online Free — FileVerze',
     description: 'Export JSON arrays into tabular CSV spreadsheet format.',
-    keywords: 'json to csv, convert json to spreadsheet'
+    keywords: 'json to csv converter free, json to spreadsheet online'
   },
   '/xml_to_json': {
-    title: 'XML to JSON Converter — FileVerze',
-    description: 'Parse XML tags into native structured JSON models.',
-    keywords: 'xml to json, parse xml'
+    title: 'XML to JSON Converter Online Free — FileVerze',
+    description: 'Parse XML markup trees into native structured JSON models.',
+    keywords: 'xml to json converter, parse xml online'
   },
   '/base64_encode_decode': {
-    title: 'Base64 Encoder & Decoder — FileVerze',
-    description: 'Encode text and files to Base64 or decode Base64 strings to original text.',
-    keywords: 'base64 encode, base64 decode, base64 converter'
+    title: 'Base64 Encoder & Decoder Online Free — FileVerze',
+    description: 'Encode text and files to Base64 or decode Base64 strings to original data.',
+    keywords: 'base64 encode decode online free, base64 converter'
   },
   '/hash_generator': {
     title: 'Cryptographic Hash Generator (SHA-256, MD5, SHA-512) — FileVerze',
     description: 'Compute checksum cryptographic hashes for text and file verification.',
-    keywords: 'hash generator, sha256 hash, md5 hash, checksum generator'
+    keywords: 'hash generator online, sha256 hash generator, md5 hash, file checksum'
   },
   '/bcrypt_generator': {
-    title: 'Bcrypt Hash Generator & Verifier — FileVerze',
+    title: 'Bcrypt Hash Generator & Verifier Online Free — FileVerze',
     description: 'Generate salted bcrypt password hashes with configurable work factor.',
-    keywords: 'bcrypt generator, bcrypt hash, password hash'
+    keywords: 'bcrypt generator online, bcrypt password hash'
   },
   '/word_character_counter': {
-    title: 'Word, Character & Reading Time Counter — FileVerze',
+    title: 'Word, Character & Reading Time Counter Online Free — FileVerze',
     description: 'Analyze word counts, character lengths, sentence density, and reading duration.',
-    keywords: 'word counter, character counter, reading time calculator'
+    keywords: 'word counter online free, character counter, reading time calculator'
   },
   '/markdown_to_html': {
-    title: 'Markdown to HTML Converter — FileVerze',
+    title: 'Markdown to HTML Converter Online Free — FileVerze',
     description: 'Compile Markdown syntax into semantic HTML markup in real-time.',
-    keywords: 'markdown to html, convert markdown, md to html'
+    keywords: 'markdown to html converter online, convert md to html'
   },
   '/html_to_markdown': {
-    title: 'HTML to Markdown Converter — FileVerze',
+    title: 'HTML to Markdown Converter Online Free — FileVerze',
     description: 'Convert HTML markup trees into clean Markdown syntax.',
-    keywords: 'html to markdown, convert html to md'
+    keywords: 'html to markdown converter, convert html to md'
   },
   '/css_formatter': {
-    title: 'CSS Formatter & Minifier — FileVerze',
+    title: 'CSS Formatter & Minifier Online Free — FileVerze',
     description: 'Format, beautify, and compress CSS stylesheets.',
-    keywords: 'css formatter, minify css, beautify css'
+    keywords: 'css formatter online, minify css, beautify css'
   },
   '/html_formatter': {
-    title: 'HTML Formatter & Minifier — FileVerze',
+    title: 'HTML Formatter & Minifier Online Free — FileVerze',
     description: 'Format, indent, and compress HTML documents.',
-    keywords: 'html formatter, format html, minify html'
+    keywords: 'html formatter online, format html code, minify html'
   }
 };
 
