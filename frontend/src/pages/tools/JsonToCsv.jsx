@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useFileContext } from '../../context/FileContext';
 
 export default function JsonToCsv() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [inputText, setInputText] = useState('');
   const [file, setFile] = useState(null);
   const [csvResult, setCsvResult] = useState('');
@@ -9,6 +12,26 @@ export default function JsonToCsv() {
   const [mode, setMode] = useState('text'); // 'text' or 'file'
   const [errorMsg, setErrorMsg] = useState('');
   const [processedFileUrl, setProcessedFileUrl] = useState(null);
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      setFile(stagedFile);
+      setMode('file');
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setInputText(content);
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        clearFile();
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   const convertJsonToCsv = (jsonString) => {
     try {

@@ -1,11 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import * as xmlJs from 'xml-js';
+import { useFileContext } from '../../context/FileContext';
 
 export default function XmlToJson() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [xml, setXml] = useState('<?xml version="1.0" encoding="utf-8"?>\n<note>\n  <to>Tove</to>\n  <from>Jani</from>\n  <heading>Reminder</heading>\n  <body>Don\'t forget me this weekend!</body>\n</note>');
   const [json, setJson] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setXml(content);
+          clearFile();
+        }).catch((err) => {
+          console.error(err);
+          clearFile();
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setXml(e.target?.result || '');
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     try {

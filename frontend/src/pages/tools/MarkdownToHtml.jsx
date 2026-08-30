@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { marked } from 'marked';
+import { useFileContext } from '../../context/FileContext';
 
 export default function MarkdownToHtml() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [markdown, setMarkdown] = useState('# Hello World\n\nWrite your **markdown** here!');
   const [html, setHtml] = useState('');
+
+  // 1. Hydrate staged file from Universal Dropzone
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setMarkdown(content);
+          clearFile();
+        }).catch((err) => {
+          console.error('Failed reading staged file:', err);
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setMarkdown(e.target?.result || '');
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     try {

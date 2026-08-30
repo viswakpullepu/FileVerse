@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import TurndownService from 'turndown';
+import { useFileContext } from '../../context/FileContext';
 
 export default function HtmlToMarkdown() {
+  const { sharedFile, clearFile } = useFileContext();
+  const location = useLocation();
   const [html, setHtml] = useState('<h1>Hello World</h1>\n<p>Write your <strong>HTML</strong> here!</p>');
   const [markdown, setMarkdown] = useState('');
+
+  // Hydrate staged file
+  useEffect(() => {
+    const stagedFile = sharedFile || location.state?.autoLoadedFile;
+    if (stagedFile) {
+      if (typeof stagedFile.text === 'function') {
+        stagedFile.text().then((content) => {
+          setHtml(content);
+          clearFile();
+        }).catch((err) => {
+          console.error('Failed reading staged file:', err);
+        });
+      } else {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setHtml(e.target?.result || '');
+          clearFile();
+        };
+        reader.readAsText(stagedFile);
+      }
+    }
+  }, [sharedFile, location.state, clearFile]);
 
   useEffect(() => {
     try {
