@@ -93,6 +93,8 @@ const phase2Tools = [
   { path: '/font_converter', title: 'Font Studio & Inspector', desc: 'Inspect glyphs, test typography, and generate CSS @font-face rules.', icon: Type, color: '#6366f1' },
 ];
 
+import HeroSection from '../components/HeroSection';
+
 const allTools = [...phase2Tools, ...pdfTools, ...imageTools, ...videoTools, ...devTools];
 
 const SkeletonCard = () => (
@@ -137,22 +139,12 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="dashboard-container">
-      <div className="hero dashboard-hero">
-        <h1 className="hero-title">
-          {isReturningUser ? 'Welcome back to fileverze' : 'Every tool you could need in one place'}
-        </h1>
-        <p className="hero-subtitle">
-          {isReturningUser 
-            ? 'Jump right back into your favorite tools or discover something new. All processing stays securely in your browser.'
-            : 'fileverze is a powerhouse. All our tools are completely free and run natively in your browser. Select any tool below to begin.'}
-        </p>
-      </div>
+    <div className="dashboard-container" style={{ padding: 0, maxWidth: '100%' }}>
+      {/* PHASE 2: ANIMATION-INTENSIVE HERO SECTION */}
+      <HeroSection />
 
-      {/* UNIVERSAL SMART DROPZONE */}
-      <UniversalDropzone />
-
-      {/* RECENTLY USED SECTION */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.5rem' }} id="all-tools-grid">
+        {/* RECENTLY USED SECTION */}
       {!isLoading && recentTools.length > 0 && (
         <>
           <div className="section-header">
@@ -366,6 +358,7 @@ export default function Dashboard() {
           ))}
         </div>
       </section>
+      </div>
     </div>
   );
 }
