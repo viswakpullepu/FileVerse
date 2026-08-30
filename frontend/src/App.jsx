@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid, Menu, X } from 'lucide-react';
+import Lenis from 'lenis';
 import SEO from './components/SEO';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
@@ -82,6 +83,32 @@ function App() {
   ];
   const headerRef = useRef(null);
   const location = useLocation();
+
+  useEffect(() => {
+    // Initialize Lenis smooth inertia scrolling
+    const lenis = new Lenis({
+      duration: 1.15,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      gestureOrientation: 'vertical',
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.8,
+      infinite: false,
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
 
   useEffect(() => {
     // Close mobile menu on route change

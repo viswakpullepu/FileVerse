@@ -18,7 +18,7 @@ export default function LandingPage() {
       <HeroSection />
 
       {/* 2. VALUE PROPOSITION: ASYMMETRIC BENTO GRID */}
-      <section style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 1.5rem 4rem 1.5rem' }}>
+      <section id="bento-features" style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 1.5rem 4rem 1.5rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.35rem 0.9rem', background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '9999px', color: '#047857', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem' }}>
             <Sparkles size={15} />
