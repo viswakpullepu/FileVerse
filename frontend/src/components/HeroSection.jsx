@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as THREE from 'three';
 import { ArrowRight, ShieldCheck, Zap, Lock, Sparkles, ChevronDown } from 'lucide-react';
 import UniversalDropzone from './UniversalDropzone';
@@ -213,14 +214,14 @@ export default function HeroSection() {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '85vh',
+        minHeight: '78vh',
         background: 'linear-gradient(180deg, #FAFAFC 0%, #F4F5F8 100%)',
         overflow: 'hidden',
-        padding: '3.5rem 1.5rem 4.5rem 1.5rem',
+        padding: '1.75rem 1.25rem 2.25rem 1.25rem',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         borderBottom: '1px solid #E2E8F0',
         willChange: 'transform'
       }}
@@ -241,96 +242,118 @@ export default function HeroSection() {
       />
 
       {/* Main Content Container */}
-      <div style={{ position: 'relative', zIndex: 2, maxWidth: '1080px', width: '100%', textAlign: 'center', margin: '0 auto' }}>
+      <div style={{ position: 'relative', zIndex: 2, maxWidth: '980px', width: '100%', textAlign: 'center', margin: '0 auto' }}>
         
         {/* Privacy Trust Badge */}
         <div style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          padding: '0.45rem 1.1rem',
-          background: 'rgba(255, 255, 255, 0.9)',
+          padding: '0.35rem 0.95rem',
+          background: 'rgba(255, 255, 255, 0.95)',
           border: '1px solid #E2E8F0',
           borderRadius: '9999px',
           backdropFilter: 'blur(12px)',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.02)',
-          marginBottom: '1.75rem'
+          boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+          marginBottom: '0.85rem'
         }}>
-          <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} />
-          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#1E293B' }}>
-            100% In-Browser Computation • Zero Bytes Uploaded to Cloud
+          <span style={{ display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', background: '#10B981' }} />
+          <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1E293B' }}>
+            100% In-Browser Privacy • Zero Server Uploads
           </span>
         </div>
 
         {/* Master Headline */}
         <h1 style={{
-          fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)',
+          fontSize: 'clamp(2rem, 4.5vw, 3.4rem)',
           fontWeight: 850,
-          color: '#111827',
-          lineHeight: 1.1,
+          color: '#0f172a',
+          lineHeight: 1.15,
           letterSpacing: '-0.035em',
-          margin: '0 auto 1.25rem auto',
-          maxWidth: '900px'
+          margin: '0 auto 0.6rem auto',
+          maxWidth: '820px'
         }}>
-          Convert. Compress. Compute.{' '}
-          <span style={{ color: '#4B5563', fontWeight: 400 }}>
-            Locally in your browser.
+          Convert, Compress & Edit Any File.{' '}
+          <span style={{ color: '#059669', display: 'inline-block' }}>
+            Directly in your browser.
           </span>
         </h1>
 
         {/* Subtitle */}
         <p style={{
-          fontSize: 'clamp(1.05rem, 1.8vw, 1.25rem)',
-          color: '#4B5563',
-          maxWidth: '680px',
-          margin: '0 auto 2.5rem auto',
-          lineHeight: 1.6,
+          fontSize: 'clamp(0.95rem, 1.4vw, 1.1rem)',
+          color: '#475569',
+          maxWidth: '640px',
+          margin: '0 auto 1.5rem auto',
+          lineHeight: 1.5,
           fontWeight: 450
         }}>
-          Every file utility you need in one unified, high-performance workspace. 
-          Powered by WebAssembly, WebGL, and HTML5 Canvas — zero file size limits, zero sign-ups, and absolute privacy.
+          Drop any document, image, video, or data file below for instant client-side processing. 
+          Zero cloud uploads, unlimited file sizes, and absolute data privacy.
         </p>
 
-        {/* Action Buttons with True Magnetic Cursor Interaction */}
+        {/* Embedded Universal Smart Dropzone (Immediate Primary Focal Point) */}
+        <div style={{
+          position: 'relative',
+          maxWidth: '880px',
+          margin: '0 auto',
+          background: '#ffffff',
+          borderRadius: '24px',
+          padding: '0.4rem',
+          boxShadow: '0 12px 36px -8px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.08)',
+        }}>
+          <UniversalDropzone />
+        </div>
+
+        {/* Quick Popular Tool Shortcuts Bar */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '1.25rem',
+          gap: '8px',
           flexWrap: 'wrap',
-          marginBottom: '3.5rem'
+          marginTop: '1.25rem',
         }}>
-          <MagneticButton
-            to="/app"
-            variant="primary"
-            icon={ArrowRight}
-          >
-            Launch Studio (50+ Tools)
-          </MagneticButton>
-
-          <MagneticButton
-            to="/faq"
-            variant="glass"
-            icon={ShieldCheck}
-          >
-            How Local Privacy Works
-          </MagneticButton>
-        </div>
-
-        {/* Embedded Universal Smart Dropzone with Secure Lock Physics */}
-        <div style={{
-          position: 'relative',
-          maxWidth: '860px',
-          margin: '0 auto'
-        }}>
-          <UniversalDropzone />
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748B', marginRight: '4px' }}>Quick Tools:</span>
+          {[
+            { label: 'Merge PDF', path: '/merge_pdf' },
+            { label: 'Sign PDF', path: '/sign_pdf' },
+            { label: 'Remove BG', path: '/remove_bg' },
+            { label: 'Gemini Watermark', path: '/gemini_watermark_remover' },
+            { label: 'Compress Image', path: '/compress_image' },
+            { label: 'PDF to Word', path: '/pdf_to_word' },
+            { label: 'EXIF Stripper', path: '/exif_stripper' },
+            { label: 'Video to GIF', path: '/video_to_gif' },
+            { label: 'Studio (50+ Tools) →', path: '/app', highlight: true },
+          ].map(tool => (
+            <Link
+              key={tool.label}
+              to={tool.path}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                padding: '0.35rem 0.8rem',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: 650,
+                textDecoration: 'none',
+                background: tool.highlight ? '#0f172a' : 'rgba(255, 255, 255, 0.9)',
+                color: tool.highlight ? '#ffffff' : '#334155',
+                border: '1px solid ' + (tool.highlight ? '#0f172a' : '#E2E8F0'),
+                boxShadow: '0 1px 3px rgba(0,0,0,0.03)',
+                transition: 'all 150ms ease',
+              }}
+            >
+              {tool.label}
+            </Link>
+          ))}
         </div>
 
         {/* Scroll Indicator */}
         <div 
           onClick={scrollToTools}
           style={{
-            marginTop: '3.5rem',
+            marginTop: '2rem',
             display: 'inline-flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -345,8 +368,8 @@ export default function HeroSection() {
           onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
           onMouseLeave={(e) => e.currentTarget.style.opacity = '0.85'}
         >
-          <span>Explore features & architectural breakdown</span>
-          <ChevronDown size={18} style={{ animation: 'bounceSlow 2s infinite' }} />
+          <span>Explore architecture & all features</span>
+          <ChevronDown size={16} style={{ animation: 'bounceSlow 2s infinite' }} />
         </div>
 
       </div>

@@ -27,6 +27,8 @@ import PowerpointToPdf from './pages/tools/PowerpointToPdf';
 import CompressPdfBackend from './pages/tools/CompressPdfBackend';
 import ProtectPDF from './pages/tools/ProtectPDF';
 import UnlockPDF from './pages/tools/UnlockPDF';
+import SignPDF from './pages/tools/SignPDF';
+import ExifStripper from './pages/tools/ExifStripper';
 import TrimVideo from './pages/tools/TrimVideo';
 import AddWatermark from './pages/tools/AddWatermark';
 import HashGenerator from './pages/tools/HashGenerator';
@@ -228,6 +230,7 @@ function App() {
                     <Link to="/rotate_image" className="mega-item" onClick={closeDropdown}>Rotate Image</Link>
                     <Link to="/grayscale_image" className="mega-item" onClick={closeDropdown}>Grayscale Image</Link>
                     <Link to="/image_blur" className="mega-item" onClick={closeDropdown}>Blur Image</Link>
+                    <Link to="/exif_stripper" className="mega-item" onClick={closeDropdown}>EXIF & Metadata Stripper</Link>
                   </div>
                   <div className="mega-column">
                     <div className="mega-column-title">MOBILE & CAMERA</div>
@@ -310,7 +313,7 @@ function App() {
                     <div className="mega-column-title">PDF SECURITY</div>
                     <Link to="/unlock_pdf" className="mega-item" onClick={closeDropdown}>Unlock PDF</Link>
                     <Link to="/protect_pdf" className="mega-item" onClick={closeDropdown}>Protect PDF</Link>
-                    <Link to="/convert/pdf" className="mega-item" onClick={closeDropdown}>Sign PDF</Link>
+                    <Link to="/sign_pdf" className="mega-item" onClick={closeDropdown}>Sign PDF</Link>
                     <Link to="/convert/pdf" className="mega-item" onClick={closeDropdown}>Redact PDF</Link>
                     <Link to="/convert/pdf" className="mega-item" onClick={closeDropdown}>Compare PDF</Link>
                   </div>
@@ -432,6 +435,8 @@ function App() {
           <Route path="/remove_background" element={<RemoveBackground />} />
           <Route path="/protect_pdf" element={<ProtectPDF />} />
           <Route path="/unlock_pdf" element={<UnlockPDF />} />
+          <Route path="/sign_pdf" element={<SignPDF />} />
+          <Route path="/exif_stripper" element={<ExifStripper />} />
           <Route path="/trim_video" element={<TrimVideo />} />
           <Route path="/add_watermark" element={<AddWatermark />} />
           <Route path="/hash_generator" element={<HashGenerator />} />

@@ -10,7 +10,6 @@ import {
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState('privacy');
-  const [sliderPosition, setSliderPosition] = useState(50);
 
   return (
     <div className="landing-page" style={{ background: '#FAFAFC', color: '#111827', minHeight: '100vh', overflowX: 'hidden' }}>
@@ -173,124 +172,6 @@ export default function LandingPage() {
             <p style={{ fontSize: '0.95rem', color: '#4B5563', lineHeight: 1.65 }}>
               Zero telemetry, zero server-side logs, and zero retention. Ideal for confidential legal, financial, and medical documents.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. INTERACTIVE SHOWCASE: SCROLL-TIED VISUAL DEMO */}
-      <section style={{ background: '#F1F5F9', borderTop: '1px solid #E2E8F0', borderBottom: '1px solid #E2E8F0', padding: '6rem 1.5rem' }}>
-        <div style={{ maxWidth: '1080px', margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.75rem)', fontWeight: 850, letterSpacing: '-0.03em', color: '#111827', marginBottom: '1rem' }}>
-            Experience the Conversion Precision
-          </h2>
-          <p style={{ fontSize: '1.05rem', color: '#4B5563', maxWidth: '600px', margin: '0 auto 3rem auto', lineHeight: 1.6 }}>
-            Drag the comparison slider to see how FileVerze reconstructs complex vector geometries and removes backgrounds in real-time.
-          </p>
-
-          {/* Interactive Comparison Card */}
-          <div style={{
-            background: '#ffffff',
-            border: '1px solid #CBD5E1',
-            borderRadius: '20px',
-            padding: '2rem',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.04)',
-            maxWidth: '800px',
-            margin: '0 auto'
-          }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', fontWeight: 700, fontSize: '0.9rem' }}>
-              <span style={{ color: '#64748B' }}>Original Scanned Image (Background)</span>
-              <span style={{ color: '#059669' }}>In-Browser Transparent Cutout (Clean)</span>
-            </div>
-
-            {/* Slider Simulation Canvas */}
-            <div style={{ position: 'relative', height: '320px', borderRadius: '12px', overflow: 'hidden', background: '#e2e8f0', userSelect: 'none' }}>
-              
-              {/* Clean Output Layer (Right Side) */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'repeating-conic-gradient(#f1f5f9 0% 25%, #ffffff 0% 50%) 50% / 20px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto', color: '#ffffff', boxShadow: '0 8px 24px rgba(16,185,129,0.3)' }}>
-                    <Sparkles size={60} />
-                  </div>
-                  <h4 style={{ fontWeight: 800, margin: 0, color: '#111827' }}>Clean Transparent Alpha Channel</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '4px 0 0 0' }}>100% Euclidean Color Distance Segmentation</p>
-                </div>
-              </div>
-
-              {/* Original Layer with Clip Path based on slider */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(135deg, #64748b 0%, #334155 100%)',
-                clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff'
-              }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ width: '120px', height: '120px', borderRadius: '50%', background: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto', color: '#ffffff' }}>
-                    <Wand2 size={60} />
-                  </div>
-                  <h4 style={{ fontWeight: 800, margin: 0 }}>Original Unprocessed Image</h4>
-                  <p style={{ fontSize: '0.85rem', color: '#cbd5e1', margin: '4px 0 0 0' }}>Solid / Cluttered Background</p>
-                </div>
-              </div>
-
-              {/* Slider Divider Line */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: `${sliderPosition}%`,
-                width: '4px',
-                height: '100%',
-                background: '#111827',
-                transform: 'translateX(-50%)',
-                cursor: 'ew-resize'
-              }}>
-                <div style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  background: '#111827',
-                  color: '#ffffff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '12px',
-                  fontWeight: 800,
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
-                }}>
-                  ↔
-                </div>
-              </div>
-            </div>
-
-            {/* Slider Input Control */}
-            <input
-              type="range"
-              min="5"
-              max="95"
-              value={sliderPosition}
-              onChange={(e) => setSliderPosition(Number(e.target.value))}
-              style={{ width: '100%', marginTop: '1.75rem', cursor: 'ew-resize' }}
-            />
           </div>
         </div>
       </section>

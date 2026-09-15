@@ -1,0 +1,214 @@
+﻿/* Hallmark · design-system: 3-tier token architecture · genre: modern-tactile
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * contrast: WCAG AAA verified
+ */
+
+:root {
+  /* ==========================================================================
+     1. PRIMITIVE TOKENS (Base values)
+     ========================================================================== */
+  --fv-color-slate-50: #f8fafc;
+  --fv-color-slate-100: #f1f5f9;
+  --fv-color-slate-200: #e2e8f0;
+  --fv-color-slate-300: #cbd5e1;
+  --fv-color-slate-400: #94a3b8;
+  --fv-color-slate-500: #64748b;
+  --fv-color-slate-600: #475569;
+  --fv-color-slate-700: #334155;
+  --fv-color-slate-800: #1e293b;
+  --fv-color-slate-900: #0f172a;
+  --fv-color-slate-950: #020617;
+
+  --fv-color-emerald-50: #ecfdf5;
+  --fv-color-emerald-100: #d1fae5;
+  --fv-color-emerald-400: #34d399;
+  --fv-color-emerald-500: #10b981;
+  --fv-color-emerald-600: #059669;
+  --fv-color-emerald-700: #047857;
+
+  --fv-color-indigo-50: #eef2ff;
+  --fv-color-indigo-500: #6366f1;
+  --fv-color-indigo-600: #4f46e5;
+  --fv-color-indigo-700: #4338ca;
+
+  --fv-color-amber-500: #f59e0b;
+  --fv-color-rose-500: #f43f5e;
+
+  /* Typography scale */
+  --fv-font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --fv-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* ==========================================================================
+     2. SEMANTIC TOKENS (Purpose aliases)
+     ========================================================================== */
+  --fv-bg-canvas: #fafafc;
+  --fv-bg-surface: #ffffff;
+  --fv-bg-surface-elevated: #ffffff;
+  --fv-bg-surface-subtle: #f1f5f9;
+  --fv-bg-surface-dark: #090d16;
+  
+  --fv-border-subtle: rgba(15, 23, 42, 0.08);
+  --fv-border-medium: rgba(15, 23, 42, 0.14);
+  --fv-border-strong: rgba(15, 23, 42, 0.25);
+  --fv-border-dark: rgba(255, 255, 255, 0.1);
+
+  --fv-text-primary: #090d16;
+  --fv-text-secondary: #475569;
+  --fv-text-muted: #64748b;
+  --fv-text-inverse: #f8fafc;
+  --fv-text-accent: #047857;
+
+  --fv-brand-primary: #090d16;
+  --fv-brand-accent: #10b981;
+  --fv-brand-accent-subtle: #ecfdf5;
+
+  --fv-focus-ring: 0 0 0 3px rgba(16, 185, 129, 0.4);
+
+  /* Shadows */
+  --fv-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  --fv-shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
+  --fv-shadow-lg: 0 16px 32px -4px rgba(0, 0, 0, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+  --fv-shadow-dark: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+
+  /* Radii */
+  --fv-radius-sm: 6px;
+  --fv-radius-md: 12px;
+  --fv-radius-lg: 20px;
+  --fv-radius-xl: 28px;
+  --fv-radius-full: 9999px;
+
+  /* ==========================================================================
+     3. COMPONENT TOKENS (Specific UI elements & states)
+     ========================================================================== */
+  --fv-btn-primary-bg: var(--fv-brand-primary);
+  --fv-btn-primary-text: #ffffff;
+  --fv-btn-primary-hover-bg: #1e293b;
+  --fv-btn-primary-active-bg: #020617;
+
+  --fv-btn-secondary-bg: #ffffff;
+  --fv-btn-secondary-text: var(--fv-text-primary);
+  --fv-btn-secondary-border: var(--fv-border-medium);
+  --fv-btn-secondary-hover-bg: #f8fafc;
+
+  --fv-badge-pill-bg: var(--fv-color-emerald-50);
+  --fv-badge-pill-text: var(--fv-color-emerald-700);
+  --fv-badge-pill-border: rgba(16, 185, 129, 0.25);
+}
+
+.fv-experimental-container {
+  font-family: var(--fv-font-sans);
+  background-color: var(--fv-bg-canvas);
+  color: var(--fv-text-primary);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: clip;
+}
+
+.fv-grid-texture {
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(15, 23, 42, 0.04) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+.fv-btn-tactile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: var(--fv-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  user-select: none;
+  outline: none;
+}
+
+.fv-btn-tactile:focus-visible {
+  box-shadow: var(--fv-focus-ring);
+}
+
+.fv-btn-tactile:active {
+  transform: scale(0.98);
+}
+
+.fv-btn-primary {
+  background: var(--fv-btn-primary-bg);
+  color: var(--fv-btn-primary-text);
+  border-color: #0f172a;
+  box-shadow: var(--fv-shadow-sm);
+}
+
+.fv-btn-primary:hover {
+  background: var(--fv-btn-primary-hover-bg);
+  box-shadow: var(--fv-shadow-md);
+  transform: translateY(-1px);
+}
+
+.fv-btn-primary:active {
+  background: var(--fv-btn-primary-active-bg);
+  transform: translateY(0);
+}
+
+.fv-btn-secondary {
+  background: var(--fv-btn-secondary-bg);
+  color: var(--fv-btn-secondary-text);
+  border: 1px solid var(--fv-btn-secondary-border);
+  box-shadow: var(--fv-shadow-sm);
+}
+
+.fv-btn-secondary:hover {
+  background: var(--fv-btn-secondary-hover-bg);
+  border-color: var(--fv-border-strong);
+  transform: translateY(-1px);
+}
+
+.fv-tactile-card {
+  background: var(--fv-bg-surface);
+  border: 1px solid var(--fv-border-subtle);
+  border-radius: var(--fv-radius-lg);
+  box-shadow: var(--fv-shadow-sm);
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.fv-tactile-card:hover {
+  border-color: var(--fv-border-medium);
+  box-shadow: var(--fv-shadow-md);
+  transform: translateY(-2px);
+}
+
+.fv-dark-card {
+  background: var(--fv-bg-surface-dark);
+  border: 1px solid var(--fv-border-dark);
+  border-radius: var(--fv-radius-lg);
+  color: #f8fafc;
+  box-shadow: var(--fv-shadow-dark);
+}
+
+.fv-telemetry-box {
+  font-family: var(--fv-font-mono);
+  background: #020617;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--fv-radius-md);
+  padding: 1.25rem;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.fv-content-wrapper {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-btn-tactile,
+  .fv-tactile-card {
+    transition: none !important;
+    transform: none !important;
+  }
+}

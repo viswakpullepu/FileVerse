@@ -478,7 +478,7 @@ export default function UniversalDropzone() {
   };
 
   return (
-    <div className="universal-hero-container" style={{ width: '100%', maxWidth: '1040px', margin: '0 auto 3rem auto', position: 'relative' }}>
+    <div className="universal-hero-container" style={{ width: '100%', maxWidth: '1040px', margin: '0 auto', position: 'relative' }}>
       <style>{`
         /* Monochromatic & Spring Transition Styles */
         .universal-dropzone-box {
@@ -647,7 +647,7 @@ export default function UniversalDropzone() {
         onDragLeave={handleDragLeave}
         onClick={() => !activeFile && fileInputRef.current?.click()}
         style={{
-          padding: activeFile ? '1.25rem 1.5rem' : '3.5rem 1.5rem',
+          padding: activeFile ? '1.25rem 1.5rem' : '2.25rem 1.5rem',
           textAlign: 'center',
           cursor: activeFile ? 'default' : 'pointer',
         }}
@@ -668,39 +668,39 @@ export default function UniversalDropzone() {
         {!activeFile ? (
           <div style={{ pointerEvents: 'auto' }}>
             <div style={{
-              width: '72px',
-              height: '72px',
+              width: '58px',
+              height: '58px',
               borderRadius: '50%',
-              background: '#ffffff',
+              background: '#f8fafc',
               border: '1px solid #e2e8f0',
-              color: '#111827',
+              color: '#0f172a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              margin: '0 auto 1.25rem auto',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
+              margin: '0 auto 0.9rem auto',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.03)'
             }}>
-              <UploadCloud size={34} strokeWidth={1.75} />
+              <UploadCloud size={28} strokeWidth={2} />
             </div>
 
             <h2 style={{
-              fontSize: '1.65rem',
+              fontSize: '1.45rem',
               fontWeight: 800,
-              color: '#111827',
-              letterSpacing: '-0.5px',
-              marginBottom: '0.4rem'
+              color: '#0f172a',
+              letterSpacing: '-0.4px',
+              marginBottom: '0.35rem'
             }}>
-              Upload any file to begin
+              Drop your file here, or browse
             </h2>
 
             <p style={{
               color: '#64748b',
-              fontSize: '0.95rem',
-              maxWidth: '560px',
-              margin: '0 auto 1.5rem auto',
-              lineHeight: 1.5
+              fontSize: '0.9rem',
+              maxWidth: '520px',
+              margin: '0 auto 1.1rem auto',
+              lineHeight: 1.45
             }}>
-              Drop any document, image, video, audio, code, 3D model, or spreadsheet. All processing runs 100% locally on your device.
+              Documents, images, video, audio, or data. 100% private in-browser execution.
             </p>
 
             <button
@@ -713,16 +713,16 @@ export default function UniversalDropzone() {
                 }
               }}
               style={{
-                background: '#111827',
+                background: '#0f172a',
                 color: '#ffffff',
                 border: 'none',
-                padding: '0.95rem 2.4rem',
+                padding: '0.75rem 2rem',
                 borderRadius: '10px',
-                fontWeight: 700,
-                fontSize: '0.98rem',
+                fontWeight: 650,
+                fontSize: '0.92rem',
                 cursor: 'pointer',
                 transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.12)',
+                boxShadow: '0 4px 12px rgba(15, 23, 42, 0.15)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px'
@@ -730,17 +730,45 @@ export default function UniversalDropzone() {
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = '#000000';
                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.2)';
+                e.currentTarget.style.boxShadow = '0 6px 18px rgba(0, 0, 0, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#111827';
+                e.currentTarget.style.background = '#0f172a';
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 4px 14px rgba(0, 0, 0, 0.12)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(15, 23, 42, 0.15)';
               }}
             >
-              <UploadCloud size={18} />
+              <UploadCloud size={17} />
               <span>Browse Computer</span>
             </button>
+
+            {/* Quick format indicators */}
+            <div style={{
+              marginTop: '1rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              flexWrap: 'wrap'
+            }}>
+              {['PDF', 'PNG', 'JPG', 'WEBP', 'MP4', 'GIF', 'CSV', 'JSON', '50+ Formats'].map((fmt) => (
+                <span
+                  key={fmt}
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    padding: '0.15rem 0.45rem',
+                    borderRadius: '4px',
+                    background: '#f1f5f9',
+                    color: '#64748b',
+                    border: '1px solid #e2e8f0',
+                    letterSpacing: '0.02em'
+                  }}
+                >
+                  {fmt}
+                </span>
+              ))}
+            </div>
           </div>
         ) : (
           /* REVEALED STATE HEADER: "Secure Lock" interaction & compact header */
