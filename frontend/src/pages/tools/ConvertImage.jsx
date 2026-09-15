@@ -29,34 +29,60 @@ export default function ConvertImage() {
     }
   };
 
-  const convertImage = () => {
+  const convertImage = async () => {
     if (!file) return;
     setIsProcessing(true);
-    
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = canvasRef.current;
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        
-        // Fill with white background in case of transparent PNG to JPG
-        if (targetFormat === 'image/jpeg') {
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+    try {
+      const bitmap = await createImageBitmap(file);
+      const canvas = canvasRef.current;
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext('2d', { alpha: targetFormat !== 'image/jpeg', desynchronized: true });
+      
+      // Fill with white background in case of transparent PNG to JPG
+      if (targetFormat === 'image/jpeg') {
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+      
+      ctx.drawImage(bitmap, 0, 0);
+      bitmap.close();
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          setProcessedImageUrl(url);
         }
-        
-        ctx.drawImage(img, 0, 0);
-        
-        const url = canvas.toDataURL(targetFormat, 0.92);
-        setProcessedImageUrl(url);
         setIsProcessing(false);
+      }, targetFormat, 0.92);
+    } catch (err) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = canvasRef.current;
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext('2d');
+          
+          if (targetFormat === 'image/jpeg') {
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+          
+          ctx.drawImage(img, 0, 0);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              setProcessedImageUrl(URL.createObjectURL(blob));
+            }
+            setIsProcessing(false);
+          }, targetFormat, 0.92);
+        };
+        img.src = event.target.result;
       };
-      img.src = event.target.result;
-    };
-    reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
+    }
   };
 
   const getExtension = (mimeType) => {

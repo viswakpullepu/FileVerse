@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Grid, Menu, X } from 'lucide-react';
 import Lenis from 'lenis';
@@ -7,72 +7,74 @@ import GlobalDropOverlay from './components/GlobalDropOverlay';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import UniversalConverter from './pages/UniversalConverter';
-import MergePDF from './pages/tools/MergePDF';
-import GeminiWatermarkRemover from './pages/tools/GeminiWatermarkRemover';
-import SplitPDF from './pages/tools/SplitPDF';
-import ExtractPages from './pages/tools/ExtractPages';
-import RemovePages from './pages/tools/RemovePages';
-import RotatePDF from './pages/tools/RotatePDF';
-import AddPageNumbers from './pages/tools/AddPageNumbers';
-import ConvertImage from './pages/tools/ConvertImage';
-import CompressImage from './pages/tools/CompressImage';
-import VideoToGif from './pages/tools/VideoToGif';
-import VideoToAudio from './pages/tools/VideoToAudio';
-import ImageToPDF from './pages/tools/ImageToPDF';
-import PdfToImage from './pages/tools/PdfToImage';
-import PdfToWord from './pages/tools/PdfToWord';
-import WordToPdf from './pages/tools/WordToPdf';
-import ExcelToPdf from './pages/tools/ExcelToPdf';
-import PowerpointToPdf from './pages/tools/PowerpointToPdf';
-import CompressPdfBackend from './pages/tools/CompressPdfBackend';
-import ProtectPDF from './pages/tools/ProtectPDF';
-import UnlockPDF from './pages/tools/UnlockPDF';
-import SignPDF from './pages/tools/SignPDF';
-import ExifStripper from './pages/tools/ExifStripper';
-import TrimVideo from './pages/tools/TrimVideo';
-import AddWatermark from './pages/tools/AddWatermark';
-import HashGenerator from './pages/tools/HashGenerator';
-import JsonToCsv from './pages/tools/JsonToCsv';
-import GifToMp4 from './pages/tools/GifToMp4';
-import SvgToPng from './pages/tools/SvgToPng';
-import ImageToIco from './pages/tools/ImageToIco';
-import ResizeImage from './pages/tools/ResizeImage';
-import RotateImage from './pages/tools/RotateImage';
-import GrayscaleImage from './pages/tools/GrayscaleImage';
-import ImageBlur from './pages/tools/ImageBlur';
-import BmpToPng from './pages/tools/BmpToPng';
-import WebmToMp4 from './pages/tools/WebmToMp4';
-import MuteVideo from './pages/tools/MuteVideo';
-import ChangeVideoSpeed from './pages/tools/ChangeVideoSpeed';
-import ExtractVideoFrames from './pages/tools/ExtractVideoFrames';
-import ReverseVideo from './pages/tools/ReverseVideo';
-import RemoveBackground from './pages/tools/RemoveBackground';
-import CsvToJson from './pages/tools/CsvToJson';
-import Base64EncodeDecode from './pages/tools/Base64EncodeDecode';
-import UrlEncodeDecode from './pages/tools/UrlEncodeDecode';
-import TextCaseConverter from './pages/tools/TextCaseConverter';
-import WordCharacterCounter from './pages/tools/WordCharacterCounter';
-import UuidGenerator from './pages/tools/UuidGenerator';
-import HtmlFormatter from './pages/tools/HtmlFormatter';
-import CssFormatter from './pages/tools/CssFormatter';
-import JsonFormatter from './pages/tools/JsonFormatter';
-import QrCodeGenerator from './pages/tools/QrCodeGenerator';
-import ColorConverter from './pages/tools/ColorConverter';
-import LoremIpsumGenerator from './pages/tools/LoremIpsumGenerator';
-import JwtDecoder from './pages/tools/JwtDecoder';
-import MarkdownToHtml from './pages/tools/MarkdownToHtml';
-import HtmlToMarkdown from './pages/tools/HtmlToMarkdown';
-import RegexTester from './pages/tools/RegexTester';
-import BcryptGenerator from './pages/tools/BcryptGenerator';
-import XmlToJson from './pages/tools/XmlToJson';
-import HevcToMp4 from './pages/tools/HevcToMp4';
-import SubtitleConverter from './pages/tools/SubtitleConverter';
-import GisConverter from './pages/tools/GisConverter';
-import ThreeDConverter from './pages/tools/ThreeDConverter';
-import EbookConverter from './pages/tools/EbookConverter';
-import FontConverter from './pages/tools/FontConverter';
-import OcrExtractor from './pages/tools/OcrExtractor';
-import FaqPage from './pages/FaqPage';
+
+// Lazy-loaded tools for instant initial page loading & granular browser caching
+const MergePDF = lazy(() => import('./pages/tools/MergePDF'));
+const GeminiWatermarkRemover = lazy(() => import('./pages/tools/GeminiWatermarkRemover'));
+const SplitPDF = lazy(() => import('./pages/tools/SplitPDF'));
+const ExtractPages = lazy(() => import('./pages/tools/ExtractPages'));
+const RemovePages = lazy(() => import('./pages/tools/RemovePages'));
+const RotatePDF = lazy(() => import('./pages/tools/RotatePDF'));
+const AddPageNumbers = lazy(() => import('./pages/tools/AddPageNumbers'));
+const ConvertImage = lazy(() => import('./pages/tools/ConvertImage'));
+const CompressImage = lazy(() => import('./pages/tools/CompressImage'));
+const VideoToGif = lazy(() => import('./pages/tools/VideoToGif'));
+const VideoToAudio = lazy(() => import('./pages/tools/VideoToAudio'));
+const ImageToPDF = lazy(() => import('./pages/tools/ImageToPDF'));
+const PdfToImage = lazy(() => import('./pages/tools/PdfToImage'));
+const PdfToWord = lazy(() => import('./pages/tools/PdfToWord'));
+const WordToPdf = lazy(() => import('./pages/tools/WordToPdf'));
+const ExcelToPdf = lazy(() => import('./pages/tools/ExcelToPdf'));
+const PowerpointToPdf = lazy(() => import('./pages/tools/PowerpointToPdf'));
+const CompressPdfBackend = lazy(() => import('./pages/tools/CompressPdfBackend'));
+const ProtectPDF = lazy(() => import('./pages/tools/ProtectPDF'));
+const UnlockPDF = lazy(() => import('./pages/tools/UnlockPDF'));
+const SignPDF = lazy(() => import('./pages/tools/SignPDF'));
+const ExifStripper = lazy(() => import('./pages/tools/ExifStripper'));
+const TrimVideo = lazy(() => import('./pages/tools/TrimVideo'));
+const AddWatermark = lazy(() => import('./pages/tools/AddWatermark'));
+const HashGenerator = lazy(() => import('./pages/tools/HashGenerator'));
+const JsonToCsv = lazy(() => import('./pages/tools/JsonToCsv'));
+const GifToMp4 = lazy(() => import('./pages/tools/GifToMp4'));
+const SvgToPng = lazy(() => import('./pages/tools/SvgToPng'));
+const ImageToIco = lazy(() => import('./pages/tools/ImageToIco'));
+const ResizeImage = lazy(() => import('./pages/tools/ResizeImage'));
+const RotateImage = lazy(() => import('./pages/tools/RotateImage'));
+const GrayscaleImage = lazy(() => import('./pages/tools/GrayscaleImage'));
+const ImageBlur = lazy(() => import('./pages/tools/ImageBlur'));
+const BmpToPng = lazy(() => import('./pages/tools/BmpToPng'));
+const WebmToMp4 = lazy(() => import('./pages/tools/WebmToMp4'));
+const MuteVideo = lazy(() => import('./pages/tools/MuteVideo'));
+const ChangeVideoSpeed = lazy(() => import('./pages/tools/ChangeVideoSpeed'));
+const ExtractVideoFrames = lazy(() => import('./pages/tools/ExtractVideoFrames'));
+const ReverseVideo = lazy(() => import('./pages/tools/ReverseVideo'));
+const RemoveBackground = lazy(() => import('./pages/tools/RemoveBackground'));
+const CsvToJson = lazy(() => import('./pages/tools/CsvToJson'));
+const Base64EncodeDecode = lazy(() => import('./pages/tools/Base64EncodeDecode'));
+const UrlEncodeDecode = lazy(() => import('./pages/tools/UrlEncodeDecode'));
+const TextCaseConverter = lazy(() => import('./pages/tools/TextCaseConverter'));
+const WordCharacterCounter = lazy(() => import('./pages/tools/WordCharacterCounter'));
+const UuidGenerator = lazy(() => import('./pages/tools/UuidGenerator'));
+const HtmlFormatter = lazy(() => import('./pages/tools/HtmlFormatter'));
+const CssFormatter = lazy(() => import('./pages/tools/CssFormatter'));
+const JsonFormatter = lazy(() => import('./pages/tools/JsonFormatter'));
+const QrCodeGenerator = lazy(() => import('./pages/tools/QrCodeGenerator'));
+const ColorConverter = lazy(() => import('./pages/tools/ColorConverter'));
+const LoremIpsumGenerator = lazy(() => import('./pages/tools/LoremIpsumGenerator'));
+const JwtDecoder = lazy(() => import('./pages/tools/JwtDecoder'));
+const MarkdownToHtml = lazy(() => import('./pages/tools/MarkdownToHtml'));
+const HtmlToMarkdown = lazy(() => import('./pages/tools/HtmlToMarkdown'));
+const RegexTester = lazy(() => import('./pages/tools/RegexTester'));
+const BcryptGenerator = lazy(() => import('./pages/tools/BcryptGenerator'));
+const XmlToJson = lazy(() => import('./pages/tools/XmlToJson'));
+const HevcToMp4 = lazy(() => import('./pages/tools/HevcToMp4'));
+const SubtitleConverter = lazy(() => import('./pages/tools/SubtitleConverter'));
+const GisConverter = lazy(() => import('./pages/tools/GisConverter'));
+const ThreeDConverter = lazy(() => import('./pages/tools/ThreeDConverter'));
+const EbookConverter = lazy(() => import('./pages/tools/EbookConverter'));
+const FontConverter = lazy(() => import('./pages/tools/FontConverter'));
+const OcrExtractor = lazy(() => import('./pages/tools/OcrExtractor'));
+const FaqPage = lazy(() => import('./pages/FaqPage'));
 
 function App() {
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -406,86 +408,110 @@ function App() {
       </header>
 
       <main className="main-content">
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/app" element={<Dashboard />} />
-          <Route path="/tools" element={<Dashboard />} />
-          <Route path="/all_tools" element={<Dashboard />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/faq" element={<FaqPage />} />
-          <Route path="/convert/:categoryId" element={<UniversalConverter />} />
-          <Route path="/merge_pdf" element={<MergePDF />} />
-          <Route path="/gemini_watermark_remover" element={<GeminiWatermarkRemover />} />
-          <Route path="/split_pdf" element={<SplitPDF />} />
-          <Route path="/extract_pages" element={<ExtractPages />} />
-          <Route path="/remove_pages" element={<RemovePages />} />
-          <Route path="/rotate_pdf" element={<RotatePDF />} />
-          <Route path="/add_page_numbers" element={<AddPageNumbers />} />
-          <Route path="/convert_image" element={<ConvertImage />} />
-          <Route path="/compress_image" element={<CompressImage />} />
-          <Route path="/video_to_gif" element={<VideoToGif />} />
-          <Route path="/video_to_audio" element={<VideoToAudio />} />
-          <Route path="/image_to_pdf" element={<ImageToPDF />} />
-          <Route path="/pdf_to_image" element={<PdfToImage />} />
-          <Route path="/word_to_pdf" element={<WordToPdf />} />
-          <Route path="/pdf_to_word" element={<PdfToWord />} />
-          <Route path="/excel_to_pdf" element={<ExcelToPdf />} />
-          <Route path="/powerpoint_to_pdf" element={<PowerpointToPdf />} />
-          <Route path="/compress_pdf" element={<CompressPdfBackend />} />
-          <Route path="/remove_background" element={<RemoveBackground />} />
-          <Route path="/protect_pdf" element={<ProtectPDF />} />
-          <Route path="/unlock_pdf" element={<UnlockPDF />} />
-          <Route path="/sign_pdf" element={<SignPDF />} />
-          <Route path="/exif_stripper" element={<ExifStripper />} />
-          <Route path="/trim_video" element={<TrimVideo />} />
-          <Route path="/add_watermark" element={<AddWatermark />} />
-          <Route path="/hash_generator" element={<HashGenerator />} />
-          <Route path="/json_to_csv" element={<JsonToCsv />} />
-          <Route path="/gif_to_mp4" element={<GifToMp4 />} />
-          <Route path="/svg_to_png" element={<SvgToPng />} />
-          <Route path="/image_to_ico" element={<ImageToIco />} />
-          <Route path="/resize_image" element={<ResizeImage />} />
-          <Route path="/rotate_image" element={<RotateImage />} />
-          <Route path="/grayscale_image" element={<GrayscaleImage />} />
-          <Route path="/image_blur" element={<ImageBlur />} />
-          <Route path="/bmp_to_png" element={<BmpToPng />} />
-          <Route path="/webm_to_mp4" element={<WebmToMp4 />} />
-          <Route path="/hevc_to_mp4" element={<HevcToMp4 />} />
-          <Route path="/mute_video" element={<MuteVideo />} />
-          <Route path="/change_video_speed" element={<ChangeVideoSpeed />} />
-          <Route path="/extract_video_frames" element={<ExtractVideoFrames />} />
-          <Route path="/reverse_video" element={<ReverseVideo />} />
-          <Route path="/csv_to_json" element={<CsvToJson />} />
-          <Route path="/base64_encode_decode" element={<Base64EncodeDecode />} />
-          <Route path="/url_encode_decode" element={<UrlEncodeDecode />} />
-          <Route path="/text_case_converter" element={<TextCaseConverter />} />
-          <Route path="/word_character_counter" element={<WordCharacterCounter />} />
-          <Route path="/uuid_generator" element={<UuidGenerator />} />
-          <Route path="/html_formatter" element={<HtmlFormatter />} />
-          <Route path="/css_formatter" element={<CssFormatter />} />
-          <Route path="/json_formatter" element={<JsonFormatter />} />
-          <Route path="/qrcode_generator" element={<QrCodeGenerator />} />
-          <Route path="/color_converter" element={<ColorConverter />} />
-          <Route path="/lorem_ipsum" element={<LoremIpsumGenerator />} />
-          <Route path="/jwt_decoder" element={<JwtDecoder />} />
-          <Route path="/markdown_to_html" element={<MarkdownToHtml />} />
-          <Route path="/html_to_markdown" element={<HtmlToMarkdown />} />
-          <Route path="/regex_tester" element={<RegexTester />} />
-          <Route path="/bcrypt_generator" element={<BcryptGenerator />} />
-          <Route path="/xml_to_json" element={<XmlToJson />} />
-          <Route path="/subtitle_converter" element={<SubtitleConverter />} />
-          <Route path="/convert/subtitles" element={<SubtitleConverter />} />
-          <Route path="/gis_converter" element={<GisConverter />} />
-          <Route path="/convert/gis" element={<GisConverter />} />
-          <Route path="/threed_converter" element={<ThreeDConverter />} />
-          <Route path="/convert/3d" element={<ThreeDConverter />} />
-          <Route path="/ebook_converter" element={<EbookConverter />} />
-          <Route path="/convert/ebooks" element={<EbookConverter />} />
-          <Route path="/font_converter" element={<FontConverter />} />
-          <Route path="/convert/fonts" element={<FontConverter />} />
-          <Route path="/ocr_extractor" element={<OcrExtractor />} />
-          <Route path="/convert/ai" element={<OcrExtractor />} />
-        </Routes>
+        <Suspense fallback={
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '55vh',
+            gap: '14px',
+            color: '#64748b'
+          }}>
+            <div style={{
+              width: '28px',
+              height: '28px',
+              border: '2.5px solid #e2e8f0',
+              borderTopColor: '#0f172a',
+              borderRadius: '50%',
+              animation: 'spin 0.6s linear infinite'
+            }} />
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, letterSpacing: '0.02em' }}>
+              Loading tool module...
+            </span>
+          </div>
+        }>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/app" element={<Dashboard />} />
+            <Route path="/tools" element={<Dashboard />} />
+            <Route path="/all_tools" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/convert/:categoryId" element={<UniversalConverter />} />
+            <Route path="/merge_pdf" element={<MergePDF />} />
+            <Route path="/gemini_watermark_remover" element={<GeminiWatermarkRemover />} />
+            <Route path="/split_pdf" element={<SplitPDF />} />
+            <Route path="/extract_pages" element={<ExtractPages />} />
+            <Route path="/remove_pages" element={<RemovePages />} />
+            <Route path="/rotate_pdf" element={<RotatePDF />} />
+            <Route path="/add_page_numbers" element={<AddPageNumbers />} />
+            <Route path="/convert_image" element={<ConvertImage />} />
+            <Route path="/compress_image" element={<CompressImage />} />
+            <Route path="/video_to_gif" element={<VideoToGif />} />
+            <Route path="/video_to_audio" element={<VideoToAudio />} />
+            <Route path="/image_to_pdf" element={<ImageToPDF />} />
+            <Route path="/pdf_to_image" element={<PdfToImage />} />
+            <Route path="/word_to_pdf" element={<WordToPdf />} />
+            <Route path="/pdf_to_word" element={<PdfToWord />} />
+            <Route path="/excel_to_pdf" element={<ExcelToPdf />} />
+            <Route path="/powerpoint_to_pdf" element={<PowerpointToPdf />} />
+            <Route path="/compress_pdf" element={<CompressPdfBackend />} />
+            <Route path="/remove_background" element={<RemoveBackground />} />
+            <Route path="/protect_pdf" element={<ProtectPDF />} />
+            <Route path="/unlock_pdf" element={<UnlockPDF />} />
+            <Route path="/sign_pdf" element={<SignPDF />} />
+            <Route path="/exif_stripper" element={<ExifStripper />} />
+            <Route path="/trim_video" element={<TrimVideo />} />
+            <Route path="/add_watermark" element={<AddWatermark />} />
+            <Route path="/hash_generator" element={<HashGenerator />} />
+            <Route path="/json_to_csv" element={<JsonToCsv />} />
+            <Route path="/gif_to_mp4" element={<GifToMp4 />} />
+            <Route path="/svg_to_png" element={<SvgToPng />} />
+            <Route path="/image_to_ico" element={<ImageToIco />} />
+            <Route path="/resize_image" element={<ResizeImage />} />
+            <Route path="/rotate_image" element={<RotateImage />} />
+            <Route path="/grayscale_image" element={<GrayscaleImage />} />
+            <Route path="/image_blur" element={<ImageBlur />} />
+            <Route path="/bmp_to_png" element={<BmpToPng />} />
+            <Route path="/webm_to_mp4" element={<WebmToMp4 />} />
+            <Route path="/hevc_to_mp4" element={<HevcToMp4 />} />
+            <Route path="/mute_video" element={<MuteVideo />} />
+            <Route path="/change_video_speed" element={<ChangeVideoSpeed />} />
+            <Route path="/extract_video_frames" element={<ExtractVideoFrames />} />
+            <Route path="/reverse_video" element={<ReverseVideo />} />
+            <Route path="/csv_to_json" element={<CsvToJson />} />
+            <Route path="/base64_encode_decode" element={<Base64EncodeDecode />} />
+            <Route path="/url_encode_decode" element={<UrlEncodeDecode />} />
+            <Route path="/text_case_converter" element={<TextCaseConverter />} />
+            <Route path="/word_character_counter" element={<WordCharacterCounter />} />
+            <Route path="/uuid_generator" element={<UuidGenerator />} />
+            <Route path="/html_formatter" element={<HtmlFormatter />} />
+            <Route path="/css_formatter" element={<CssFormatter />} />
+            <Route path="/json_formatter" element={<JsonFormatter />} />
+            <Route path="/qrcode_generator" element={<QrCodeGenerator />} />
+            <Route path="/color_converter" element={<ColorConverter />} />
+            <Route path="/lorem_ipsum" element={<LoremIpsumGenerator />} />
+            <Route path="/jwt_decoder" element={<JwtDecoder />} />
+            <Route path="/markdown_to_html" element={<MarkdownToHtml />} />
+            <Route path="/html_to_markdown" element={<HtmlToMarkdown />} />
+            <Route path="/regex_tester" element={<RegexTester />} />
+            <Route path="/bcrypt_generator" element={<BcryptGenerator />} />
+            <Route path="/xml_to_json" element={<XmlToJson />} />
+            <Route path="/subtitle_converter" element={<SubtitleConverter />} />
+            <Route path="/convert/subtitles" element={<SubtitleConverter />} />
+            <Route path="/gis_converter" element={<GisConverter />} />
+            <Route path="/convert/gis" element={<GisConverter />} />
+            <Route path="/threed_converter" element={<ThreeDConverter />} />
+            <Route path="/convert/3d" element={<ThreeDConverter />} />
+            <Route path="/ebook_converter" element={<EbookConverter />} />
+            <Route path="/convert/ebooks" element={<EbookConverter />} />
+            <Route path="/font_converter" element={<FontConverter />} />
+            <Route path="/convert/fonts" element={<FontConverter />} />
+            <Route path="/ocr_extractor" element={<OcrExtractor />} />
+            <Route path="/convert/ai" element={<OcrExtractor />} />
+          </Routes>
+        </Suspense>
       </main>
       <footer className="app-footer">
         <p>© {new Date().getFullYear()} FileVerze. Made with love by <a href="https://vishwak.tech" target="_blank" rel="noopener noreferrer">Vishwak Naidu</a></p>

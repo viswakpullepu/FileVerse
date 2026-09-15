@@ -38,5 +38,21 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+  build: {
+    target: 'esnext',
+    cssCodeSplit: true,
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/three')) return 'vendor-three';
+          if (id.includes('node_modules/pdfjs-dist') || id.includes('node_modules/pdf-lib')) return 'vendor-pdf';
+          if (id.includes('node_modules/@ffmpeg')) return 'vendor-ffmpeg';
+          if (id.includes('node_modules/tesseract.js')) return 'vendor-tesseract';
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router')) return 'vendor-react';
+        }
+      }
+    }
+  }
 })
