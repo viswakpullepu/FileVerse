@@ -59,7 +59,7 @@ export default function CompressPdfBackend() {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false }).promise;
       const totalPages = pdf.numPages;
 
       const outputPdfDoc = await PDFDocument.create();

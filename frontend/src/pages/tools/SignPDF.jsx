@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import * as pdfjsLib from 'pdfjs-dist';
 import { PDFDocument } from 'pdf-lib';
@@ -63,7 +63,7 @@ export default function SignPDF() {
 
     try {
       const arrayBuffer = await selectedFile.arrayBuffer();
-      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+      const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer, isEvalSupported: false });
       const doc = await loadingTask.promise;
       setPdfDoc(doc);
       setTotalPages(doc.numPages);

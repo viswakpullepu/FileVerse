@@ -31,9 +31,54 @@ export default function MarkdownToHtml() {
     }
   }, [sharedFile, location.state, clearFile]);
 
+  // Robust zero-dependency client-side sanitizer to prevent XSS
+  const sanitizeHtml = (dirtyHtml) => {
+    if (!dirtyHtml) return '';
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(dirtyHtml, 'text/html');
+
+      // 1. Strip executable elements & embedded containers
+      const blockedTags = ['script', 'iframe', 'object', 'embed', 'form', 'base', 'meta', 'link', 'style', 'template', 'applet'];
+      blockedTags.forEach((tag) => {
+        doc.querySelectorAll(tag).forEach((el) => el.remove());
+      });
+
+      // 2. Strip event handlers (onload, onerror, onclick...) and dangerous schemes (javascript:, etc.)
+      const allNodes = doc.querySelectorAll('*');
+      allNodes.forEach((el) => {
+        const attrs = Array.from(el.attributes);
+        for (const attr of attrs) {
+          const name = attr.name.toLowerCase();
+          const val = attr.value.trim().toLowerCase();
+
+          if (name.startsWith('on')) {
+            el.removeAttribute(attr.name);
+          }
+          if (['href', 'src', 'data', 'action', 'formaction', 'xlink:href'].includes(name)) {
+            if (
+              val.startsWith('javascript:') ||
+              val.startsWith('vbscript:') ||
+              val.startsWith('data:text/html') ||
+              val.startsWith('data:application/xhtml')
+            ) {
+              el.removeAttribute(attr.name);
+            }
+          }
+        }
+      });
+
+      return doc.body.innerHTML;
+    } catch (err) {
+      console.error('Sanitization error:', err);
+      return '';
+    }
+  };
+
   useEffect(() => {
     try {
-      setHtml(marked.parse(markdown));
+      const rawHtml = marked.parse(markdown);
+      setHtml(sanitizeHtml(rawHtml));
     } catch (e) {
       setHtml('<p style="color:red;">Error parsing markdown</p>');
     }
