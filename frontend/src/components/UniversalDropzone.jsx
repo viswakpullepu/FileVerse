@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFileContext } from '../context/FileContext';
+import BatchPhotoStudio from './BatchPhotoStudio';
 import {
   UploadCloud, FileText, Image as ImageIcon, Video, Music,
   Database, Code, Box, BookOpen, Type, MessageSquare, Map,
   Sparkles, ArrowRight, CheckCircle, RefreshCw, X, AlertCircle,
-  FileCheck, Lock, Unlock, Shield, ShieldCheck, Layers, HelpCircle, Terminal
+  FileCheck, Lock, Unlock, Shield, ShieldCheck, Layers, HelpCircle, Terminal,
+  Plus, Trash2, Images
 } from 'lucide-react';
 
 // Format bytes into readable format
@@ -403,7 +405,7 @@ function resolveFileTools(file) {
 }
 
 export default function UniversalDropzone() {
-  const { sharedFile, setFile, clearFile } = useFileContext();
+  const { sharedFile, sharedFiles, setFile, setFiles, addFiles, removeFile, clearFiles, clearFile } = useFileContext();
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLocking, setIsLocking] = useState(false);
   const [isLockFaded, setIsLockFaded] = useState(false);
@@ -411,10 +413,19 @@ export default function UniversalDropzone() {
   const [processingTool, setProcessingTool] = useState(null);
   const [terminalStream, setTerminalStream] = useState('');
   const fileInputRef = useRef(null);
+  const fileInputModeRef = useRef('replace');
   const navigate = useNavigate();
 
-  const activeFile = sharedFile;
-  const intelligence = resolveFileTools(activeFile);
+  const currentFiles = (sharedFiles && sharedFiles.length > 0)
+    ? sharedFiles
+    : (sharedFile ? [sharedFile] : []);
+  const activeFile = currentFiles[0] || null;
+  const isMultiFile = currentFiles.length > 1;
+  const isPhotoGroup = currentFiles.length > 1 && currentFiles.every(f =>
+    f.type?.startsWith('image/') || /\.(jpe?g|png|webp|bmp|gif|avif|tiff?)$/i.test(f.name)
+  );
+  const totalBytes = currentFiles.reduce((acc, f) => acc + (f.size || 0), 0);
+  const intelligence = activeFile ? resolveFileTools(activeFile) : null;
 
   // Continuous scrolling terminal background simulation for active computation
   useEffect(() => {
@@ -435,8 +446,14 @@ export default function UniversalDropzone() {
     return () => clearInterval(interval);
   }, [isProcessingModal]);
 
-  const triggerLockAnimation = (file) => {
-    setFile(file);
+  const triggerLockAnimation = (files) => {
+    const fileList = Array.isArray(files) ? files : [files];
+    if (fileInputModeRef.current === 'append') {
+      addFiles(fileList);
+    } else {
+      setFiles(fileList);
+    }
+    fileInputModeRef.current = 'replace';
     setIsLocking(true);
     setIsLockFaded(false);
 
@@ -452,8 +469,15 @@ export default function UniversalDropzone() {
   const handleFileDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      triggerLockAnimation(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const dropped = Array.from(e.dataTransfer.files);
+      if (currentFiles.length > 0) {
+        addFiles(dropped);
+        setIsLocking(true);
+        setTimeout(() => setIsLocking(false), 400);
+      } else {
+        triggerLockAnimation(dropped);
+      }
     }
   };
 
@@ -641,31 +665,32 @@ export default function UniversalDropzone() {
 
       {/* 1. THE DROPZONE CONTAINER */}
       <div
-        className={`universal-dropzone-box ${isDragOver ? 'drag-over' : ''} ${activeFile ? 'has-file' : ''} ${isLocking ? 'pulse-locked' : ''}`}
+        className={`universal-dropzone-box ${isDragOver ? 'drag-over' : ''} ${currentFiles.length > 0 ? 'has-file' : ''} ${isLocking ? 'pulse-locked' : ''}`}
         onDrop={handleFileDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        onClick={() => !activeFile && fileInputRef.current?.click()}
+        onClick={() => currentFiles.length === 0 && fileInputRef.current?.click()}
         style={{
-          padding: activeFile ? '1.25rem 1.5rem' : '2.25rem 1.5rem',
+          padding: currentFiles.length > 0 ? '1.25rem 1.5rem' : '2.25rem 1.5rem',
           textAlign: 'center',
-          cursor: activeFile ? 'default' : 'pointer',
+          cursor: currentFiles.length > 0 ? 'default' : 'pointer',
         }}
       >
         <input
           ref={fileInputRef}
           type="file"
+          multiple
           style={{ display: 'none' }}
           onClick={(e) => { e.target.value = ''; }}
           onChange={(e) => {
-            if (e.target.files?.[0]) {
-              triggerLockAnimation(e.target.files[0]);
+            if (e.target.files && e.target.files.length > 0) {
+              triggerLockAnimation(Array.from(e.target.files));
             }
           }}
         />
 
         {/* INITIAL STATE: Centralized Dropzone */}
-        {!activeFile ? (
+        {currentFiles.length === 0 ? (
           <div style={{ pointerEvents: 'auto' }}>
             <div style={{
               width: '58px',
@@ -690,7 +715,7 @@ export default function UniversalDropzone() {
               letterSpacing: '-0.4px',
               marginBottom: '0.35rem'
             }}>
-              Drop your file here, or browse
+              Drop your files here, or browse
             </h2>
 
             <p style={{
@@ -700,13 +725,14 @@ export default function UniversalDropzone() {
               margin: '0 auto 1.1rem auto',
               lineHeight: 1.45
             }}>
-              Documents, images, video, audio, or data. 100% private in-browser execution.
+              Batch photos, documents, videos, or data. 100% private in-browser RAM execution.
             </p>
 
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
+                fileInputModeRef.current = 'replace';
                 if (fileInputRef.current) {
                   fileInputRef.current.value = '';
                   fileInputRef.current.click();
@@ -751,7 +777,7 @@ export default function UniversalDropzone() {
               gap: '6px',
               flexWrap: 'wrap'
             }}>
-              {['PDF', 'PNG', 'JPG', 'WEBP', 'MP4', 'GIF', 'CSV', 'JSON', '50+ Formats'].map((fmt) => (
+              {['Batch Photos', 'PDF', 'PNG', 'JPG', 'WEBP', 'MP4', 'GIF', 'CSV', 'JSON', '50+ Formats'].map((fmt) => (
                 <span
                   key={fmt}
                   style={{
@@ -770,8 +796,8 @@ export default function UniversalDropzone() {
               ))}
             </div>
           </div>
-        ) : (
-          /* REVEALED STATE HEADER: "Secure Lock" interaction & compact header */
+        ) : isMultiFile ? (
+          /* MULTI-FILE REVEALED STATE HEADER */
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -780,7 +806,139 @@ export default function UniversalDropzone() {
             gap: '1rem'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', textAlign: 'left' }}>
-              {/* Padlock Icon Swapped & Animated */}
+              <div style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '10px',
+                background: '#000000',
+                color: '#ffffff',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.15)'
+              }}>
+                <Images size={22} className="lock-shackle-animated" />
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '1.05rem', fontWeight: 800, color: '#111827', letterSpacing: '-0.3px' }}>
+                    Batch of {currentFiles.length} {isPhotoGroup ? 'Photos' : 'Files'}
+                  </span>
+                  <span style={{
+                    background: '#000000',
+                    color: '#ffffff',
+                    padding: '0.15rem 0.55rem',
+                    borderRadius: '4px',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.5px'
+                  }}>
+                    {isPhotoGroup ? 'PHOTO BATCH' : 'MULTI-FILE'}
+                  </span>
+                  <span style={{
+                    background: '#f1f5f9',
+                    color: '#475569',
+                    border: '1px solid #e2e8f0',
+                    padding: '0.15rem 0.55rem',
+                    borderRadius: '4px',
+                    fontSize: '0.72rem',
+                    fontWeight: 600
+                  }}>
+                    {formatBytes(totalBytes)}
+                  </span>
+                </div>
+
+                <div style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 500,
+                  color: '#64748b',
+                  marginTop: '0.2rem',
+                  opacity: isLockFaded ? 1 : 0,
+                  transition: 'opacity 0.4s ease'
+                }}>
+                  🔒 Secured locally in RAM. Zero bytes sent to any server.
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => {
+                  fileInputModeRef.current = 'append';
+                  fileInputRef.current?.click();
+                }}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#111827',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'border-color 0.15s'
+                }}
+              >
+                <Plus size={13} /> Add More Files
+              </button>
+
+              <button
+                onClick={() => {
+                  fileInputModeRef.current = 'replace';
+                  fileInputRef.current?.click();
+                }}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#111827',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'border-color 0.15s'
+                }}
+              >
+                <RefreshCw size={13} /> Replace All
+              </button>
+
+              <button
+                onClick={clearFiles}
+                style={{
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  color: '#64748b',
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
+              >
+                <X size={14} /> Clear All
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* SINGLE FILE REVEALED STATE HEADER */
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '1rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', textAlign: 'left' }}>
               <div style={{
                 width: '46px',
                 height: '46px',
@@ -813,7 +971,6 @@ export default function UniversalDropzone() {
                   </span>
                 </div>
 
-                {/* Micro-copy trust signal (opacity 0 to 1 over 0.4s) */}
                 <div style={{
                   fontSize: '0.78rem',
                   fontWeight: 500,
@@ -827,9 +984,35 @@ export default function UniversalDropzone() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
               <button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={() => {
+                  fileInputModeRef.current = 'append';
+                  fileInputRef.current?.click();
+                }}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#111827',
+                  padding: '0.45rem 0.85rem',
+                  borderRadius: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  transition: 'border-color 0.15s'
+                }}
+              >
+                <Plus size={13} /> Add More Files
+              </button>
+
+              <button
+                onClick={() => {
+                  fileInputModeRef.current = 'replace';
+                  fileInputRef.current?.click();
+                }}
                 style={{
                   background: '#ffffff',
                   border: '1px solid #cbd5e1',
@@ -849,7 +1032,7 @@ export default function UniversalDropzone() {
               </button>
 
               <button
-                onClick={clearFile}
+                onClick={clearFiles}
                 style={{
                   background: '#f8fafc',
                   border: '1px solid #e2e8f0',
@@ -872,189 +1055,373 @@ export default function UniversalDropzone() {
       </div>
 
       {/* 2. THE SLIDE-DOWN TARGET PANEL (Framer Motion Physics: initial y: -40 to animate y: 0) */}
-      {activeFile && (
+      {currentFiles.length > 0 && (
         <div className="spring-revealed-panel" style={{ marginTop: '1rem' }}>
-          {/* Panel Top Metadata Row */}
-          <div style={{
-            background: '#ffffff',
-            border: '1px solid #e2e8f0',
-            borderRadius: '12px',
-            padding: '0.85rem 1.25rem',
-            marginBottom: '1.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.75rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
-          }}>
-            <div style={{ fontSize: '0.88rem', color: '#111827', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-              <span style={{ fontWeight: 700, color: '#111827' }}>{truncateFileName(activeFile.name, 25)}</span>
-              <span style={{ color: '#94a3b8' }}>•</span>
-              <span style={{ color: '#4b5563' }}>{intelligence?.size}</span>
-              <span style={{ color: '#94a3b8' }}>•</span>
-              <span style={{ color: '#4b5563', fontFamily: 'monospace', fontSize: '0.82rem' }}>{intelligence?.mime}</span>
-            </div>
-
-            {/* "Data Saved" Local Guarantee Badge */}
-            <div style={{
-              background: '#000000',
-              color: '#ffffff',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '9999px',
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              <span>{((activeFile.size || 0) / (1024 * 1024)).toFixed(2)} MB processed locally. 0 bytes sent to the internet.</span>
-            </div>
-          </div>
-
-          {/* Panel Bottom: Dynamic Tool Grid */}
-          {intelligence?.isSupported ? (
-            <div>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '0.85rem',
-                padding: '0 0.25rem'
-              }}>
-                <h3 style={{
-                  fontSize: '0.9rem',
-                  fontWeight: 800,
-                  color: '#111827',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.6px'
-                }}>
-                  Compatible Tools ({intelligence.tools.length})
-                </h3>
-                <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                  Select an action to launch instantly with your file preloaded
-                </span>
-              </div>
-
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                gap: '1rem'
-              }}>
-                {intelligence.tools.map((tool) => (
-                  <div
-                    key={tool.id}
-                    className="action-tool-card-invert"
-                    onClick={() => handleSelectTool(tool)}
-                  >
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
-                        <span className="tool-card-title" style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>
-                          {tool.title}
-                        </span>
-                        <span className="tool-card-badge" style={{
-                          fontSize: '0.68rem',
-                          fontWeight: 700,
-                          background: '#f8fafc',
-                          border: '1px solid #e2e8f0',
-                          color: '#475569',
-                          padding: '0.15rem 0.45rem',
-                          borderRadius: '4px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px'
-                        }}>
-                          {tool.badge}
-                        </span>
-                      </div>
-                      <p className="tool-card-desc" style={{ fontSize: '0.82rem', color: '#64748b', margin: 0, lineHeight: 1.45 }}>
-                        {tool.desc}
-                      </p>
-                    </div>
-
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: '0.78rem',
-                      fontWeight: 700,
-                      marginTop: '0.85rem'
-                    }}>
-                      <span>Launch Tool</span>
-                      <ArrowRight size={13} className="card-arrow-indicator" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            /* Fallback Graceful State */
+          {isPhotoGroup ? (
+            <BatchPhotoStudio
+              files={currentFiles}
+              onRemoveFile={removeFile}
+              onAddMore={() => {
+                fileInputModeRef.current = 'append';
+                fileInputRef.current?.click();
+              }}
+              onClearAll={clearFiles}
+            />
+          ) : isMultiFile ? (
+            /* Multi-file list for non-photo or mixed files */
             <div style={{
               background: '#ffffff',
               border: '1px solid #e2e8f0',
-              borderRadius: '12px',
-              padding: '2.5rem 2rem',
-              textAlign: 'center',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)'
+              borderRadius: '16px',
+              padding: '1.5rem',
+              boxShadow: '0 4px 16px -2px rgba(0,0,0,0.04)'
             }}>
-              <div style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '50%',
-                background: '#f8fafc',
-                border: '1px solid #e2e8f0',
-                color: '#111827',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 1rem auto'
-              }}>
-                <AlertCircle size={24} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#111827', margin: 0 }}>
+                    Selected Files ({currentFiles.length})
+                  </h3>
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0.2rem 0 0 0' }}>
+                    Total: {formatBytes(totalBytes)} • Stored purely in browser RAM
+                  </p>
+                </div>
+                <button
+                  onClick={() => {
+                    fileInputModeRef.current = 'append';
+                    fileInputRef.current?.click();
+                  }}
+                  style={{
+                    background: '#111827',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '0.45rem 0.9rem',
+                    borderRadius: '8px',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Plus size={14} /> Add More Files
+                </button>
               </div>
 
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#111827', marginBottom: '0.4rem' }}>
-                No specific tools available for this file format yet
-              </h3>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '520px', margin: '0 auto 1.5rem auto' }}>
-                We detected a <strong>.{intelligence?.ext}</strong> file ({intelligence?.size}, {intelligence?.mime}). You can still analyze or hash its payload using universal utilities:
-              </p>
-
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                gap: '0.75rem',
-                textAlign: 'left',
-                marginBottom: '1.5rem'
-              }}>
-                {intelligence?.tools.map((tool) => (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                {currentFiles.map((file, idx) => (
                   <div
-                    key={tool.id}
-                    className="action-tool-card-invert"
-                    onClick={() => handleSelectTool(tool)}
+                    key={`${file.name}-${idx}`}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '10px',
+                      padding: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.75rem'
+                    }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span className="tool-card-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111827' }}>{tool.title}</span>
-                      <ArrowRight size={13} className="card-arrow-indicator" />
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 700, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {file.name}
+                      </p>
+                      <p style={{ margin: 0, fontSize: '0.72rem', color: '#64748b' }}>
+                        {formatBytes(file.size)}
+                      </p>
                     </div>
+                    <button
+                      onClick={() => removeFile(idx)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: '#94a3b8',
+                        cursor: 'pointer',
+                        padding: '4px',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = '#ef4444'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = '#94a3b8'; }}
+                    >
+                      <X size={14} />
+                    </button>
                   </div>
                 ))}
               </div>
 
-              <button
-                onClick={clearFile}
-                style={{
+              {currentFiles.every(f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')) && (
+                <div style={{
+                  background: '#f0fdf4',
+                  border: '1px solid #bbf7d0',
+                  borderRadius: '12px',
+                  padding: '1rem 1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: '1rem'
+                }}>
+                  <div>
+                    <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#166534' }}>
+                      Ready to Merge {currentFiles.length} PDFs
+                    </h4>
+                    <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: '#15803d' }}>
+                      Combine these PDF documents sequentially into a single unified file.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => navigate('/merge_pdf', { state: { autoLoadedFiles: currentFiles, autoLoadedFile: currentFiles[0] } })}
+                    style={{
+                      background: '#166534',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.6rem 1.25rem',
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
+                    }}
+                  >
+                    <span>Launch Merge PDF</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Single file target panel */
+            <>
+              {/* Panel Top Metadata Row */}
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: '12px',
+                padding: '0.85rem 1.25rem',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
+              }}>
+                <div style={{ fontSize: '0.88rem', color: '#111827', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <span style={{ fontWeight: 700, color: '#111827' }}>{truncateFileName(activeFile.name, 25)}</span>
+                  <span style={{ color: '#94a3b8' }}>•</span>
+                  <span style={{ color: '#4b5563' }}>{intelligence?.size}</span>
+                  <span style={{ color: '#94a3b8' }}>•</span>
+                  <span style={{ color: '#4b5563', fontFamily: 'monospace', fontSize: '0.82rem' }}>{intelligence?.mime}</span>
+                </div>
+
+                {/* "Data Saved" Local Guarantee Badge */}
+                <div style={{
                   background: '#000000',
                   color: '#ffffff',
-                  border: 'none',
-                  padding: '0.65rem 1.75rem',
-                  borderRadius: '6px',
+                  padding: '0.25rem 0.75rem',
+                  borderRadius: '9999px',
+                  fontSize: '0.75rem',
                   fontWeight: 700,
-                  fontSize: '0.85rem',
-                  cursor: 'pointer'
-                }}
-              >
-                Clear Upload
-              </button>
-            </div>
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <span>{((activeFile.size || 0) / (1024 * 1024)).toFixed(2)} MB processed locally. 0 bytes sent to the internet.</span>
+                </div>
+              </div>
+
+              {/* If single image, friendly hint for batch photos */}
+              {(activeFile.type?.startsWith('image/') || /\.(jpe?g|png|webp|bmp|gif|avif)$/i.test(activeFile.name)) && (
+                <div style={{
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '10px',
+                  padding: '0.65rem 1rem',
+                  marginBottom: '1.25rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '0.75rem',
+                  fontSize: '0.8rem',
+                  color: '#475569'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Sparkles size={15} color="#0f172a" />
+                    <span>Want to edit a <strong>group of photos</strong>? Drop more photos or click "Add More Files" to activate the <strong>Batch Photo Studio</strong>.</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      fileInputModeRef.current = 'append';
+                      fileInputRef.current?.click();
+                    }}
+                    style={{
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.3rem 0.7rem',
+                      borderRadius: '6px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    + Add More
+                  </button>
+                </div>
+              )}
+
+              {/* Panel Bottom: Dynamic Tool Grid */}
+              {intelligence?.isSupported ? (
+                <div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '0.85rem',
+                    padding: '0 0.25rem'
+                  }}>
+                    <h3 style={{
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      color: '#111827',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.6px'
+                    }}>
+                      Compatible Tools ({intelligence.tools.length})
+                    </h3>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                      Select an action to launch instantly with your file preloaded
+                    </span>
+                  </div>
+
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '1rem'
+                  }}>
+                    {intelligence.tools.map((tool) => (
+                      <div
+                        key={tool.id}
+                        className="action-tool-card-invert"
+                        onClick={() => handleSelectTool(tool)}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
+                            <span className="tool-card-title" style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>
+                              {tool.title}
+                            </span>
+                            <span className="tool-card-badge" style={{
+                              fontSize: '0.68rem',
+                              fontWeight: 700,
+                              background: '#f8fafc',
+                              border: '1px solid #e2e8f0',
+                              color: '#475569',
+                              padding: '0.15rem 0.45rem',
+                              borderRadius: '4px',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px'
+                            }}>
+                              {tool.badge}
+                            </span>
+                          </div>
+                          <p className="tool-card-desc" style={{ fontSize: '0.82rem', color: '#64748b', margin: 0, lineHeight: 1.45 }}>
+                            {tool.desc}
+                          </p>
+                        </div>
+
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          fontSize: '0.78rem',
+                          fontWeight: 700,
+                          marginTop: '0.85rem'
+                        }}>
+                          <span>Launch Tool</span>
+                          <ArrowRight size={13} className="card-arrow-indicator" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                /* Fallback Graceful State */
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  padding: '2.5rem 2rem',
+                  textAlign: 'center',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    color: '#111827',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 1rem auto'
+                  }}>
+                    <AlertCircle size={24} />
+                  </div>
+
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#111827', marginBottom: '0.4rem' }}>
+                    No specific tools available for this file format yet
+                  </h3>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', maxWidth: '520px', margin: '0 auto 1.5rem auto' }}>
+                    We detected a <strong>.{intelligence?.ext}</strong> file ({intelligence?.size}, {intelligence?.mime}). You can still analyze or hash its payload using universal utilities:
+                  </p>
+
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                    gap: '0.75rem',
+                    textAlign: 'left',
+                    marginBottom: '1.5rem'
+                  }}>
+                    {intelligence?.tools.map((tool) => (
+                      <div
+                        key={tool.id}
+                        className="action-tool-card-invert"
+                        onClick={() => handleSelectTool(tool)}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span className="tool-card-title" style={{ fontSize: '0.85rem', fontWeight: 700, color: '#111827' }}>{tool.title}</span>
+                          <ArrowRight size={13} className="card-arrow-indicator" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={clearFiles}
+                    style={{
+                      background: '#000000',
+                      color: '#ffffff',
+                      border: 'none',
+                      padding: '0.65rem 1.75rem',
+                      borderRadius: '6px',
+                      fontWeight: 700,
+                      fontSize: '0.85rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Clear Upload
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

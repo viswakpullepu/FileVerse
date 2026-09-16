@@ -6,7 +6,7 @@ import { UploadCloud, ShieldCheck, Sparkles, Lock } from 'lucide-react';
 export default function GlobalDropOverlay() {
   const [isDraggingGlobally, setIsDraggingGlobally] = useState(false);
   const dragCounter = useRef(0);
-  const { setFile } = useFileContext();
+  const { setFile, addFiles } = useFileContext();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -50,13 +50,15 @@ export default function GlobalDropOverlay() {
       setIsDraggingGlobally(false);
 
       if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        const file = e.dataTransfer.files[0];
-        setFile(file);
+        const filesArr = Array.from(e.dataTransfer.files);
+        if (addFiles) {
+          addFiles(filesArr);
+        } else {
+          setFile(filesArr[0]);
+        }
 
-        // If on a sub-route that isn't the root or tools workspace, smoothly navigate to /app
-        // where the active tool drawer/metadata panel resolves the file
         if (location.pathname !== '/' && location.pathname !== '/app' && location.pathname !== '/tools') {
-          navigate('/app');
+          navigate('/');
         }
       }
     };
