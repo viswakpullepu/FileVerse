@@ -85,6 +85,7 @@ const devTools = [
 ];
 
 const phase2Tools = [
+  { path: '/cyber_forensics', title: 'Cyber Forensics Lab', desc: 'Inspect EXIF, GPS, hashes, magic bytes, entropy, and detect file masquerading.', icon: Terminal, color: '#0284c7' },
   { path: '/subtitle_converter', title: 'Subtitle & Captions', desc: 'Convert SRT, VTT, ASS, TXT and shift sync offsets in real-time.', icon: MessageSquare, color: '#0ea5e9' },
   { path: '/ocr_extractor', title: 'OCR AI Text Extractor', desc: 'Extract text from scanned images, screenshots, and receipts via browser AI.', icon: Sparkles, color: '#8b5cf6' },
   { path: '/threed_converter', title: '3D & CAD Studio', desc: 'Interactive 3D geometry viewer, polycount inspector, and STL exporter.', icon: Box, color: '#f59e0b' },

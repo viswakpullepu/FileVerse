@@ -74,6 +74,7 @@ const ThreeDConverter = lazy(() => import('./pages/tools/ThreeDConverter'));
 const EbookConverter = lazy(() => import('./pages/tools/EbookConverter'));
 const FontConverter = lazy(() => import('./pages/tools/FontConverter'));
 const OcrExtractor = lazy(() => import('./pages/tools/OcrExtractor'));
+const CyberForensicsInvestigator = lazy(() => import('./pages/tools/CyberForensicsInvestigator'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
 
 function App() {
@@ -370,6 +371,7 @@ function App() {
                   <Link to="/jwt_decoder" className="dropdown-item" onClick={closeDropdown}>JWT Decoder</Link>
                   <Link to="/qrcode_generator" className="dropdown-item" onClick={closeDropdown}>QR Code Generator</Link>
                   <Link to="/color_converter" className="dropdown-item" onClick={closeDropdown}>Color Converter</Link>
+                  <Link to="/cyber_forensics" className="dropdown-item" onClick={closeDropdown} style={{ fontWeight: 700, color: '#0284c7' }}>🛡️ Cyber Forensics Lab</Link>
                   <Link to="/lorem_ipsum" className="dropdown-item" onClick={closeDropdown}>Lorem Ipsum Generator</Link>
                 </div>
               )}
@@ -380,6 +382,7 @@ function App() {
               ALL TOOLS <ChevronDown size={14} />
               {activeDropdown === 'all' && (
                 <div className="dropdown-menu">
+                  <Link to="/cyber_forensics" className="dropdown-item" onClick={closeDropdown} style={{ fontWeight: 700, color: '#0284c7' }}>Cyber Forensics Investigator</Link>
                   <Link to="/app" className="dropdown-item" onClick={closeDropdown}>All Tools Workspace</Link>
                   <Link to="/faq" className="dropdown-item" onClick={closeDropdown}>FAQ & Knowledge Base</Link>
                   <Link to="/json_to_csv" className="dropdown-item" onClick={closeDropdown}>JSON to CSV</Link>
@@ -390,6 +393,9 @@ function App() {
             </div>
 
             {/* DIRECT NAV LINKS */}
+            <Link to="/cyber_forensics" className="nav-item" style={{ textDecoration: 'none', color: '#0284c7', fontWeight: 750, display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              FORENSICS
+            </Link>
             <Link to="/app" className="nav-item" style={{ textDecoration: 'none', color: '#111827', fontWeight: 600 }}>
               TOOLS STUDIO
             </Link>
@@ -510,6 +516,8 @@ function App() {
             <Route path="/convert/fonts" element={<FontConverter />} />
             <Route path="/ocr_extractor" element={<OcrExtractor />} />
             <Route path="/convert/ai" element={<OcrExtractor />} />
+            <Route path="/cyber_forensics" element={<CyberForensicsInvestigator />} />
+            <Route path="/forensics" element={<CyberForensicsInvestigator />} />
           </Routes>
         </Suspense>
       </main>

@@ -50,6 +50,7 @@ const TOOL_ROUTING_MAP = {
       { id: 'add_page_numbers', title: 'Add Page Numbers', desc: 'Stamp customizable header/footer page numbers', path: '/add_page_numbers', badge: 'Edit', targetExt: 'PDF' },
       { id: 'protect_pdf', title: 'Protect PDF', desc: 'Encrypt document with user password security', path: '/protect_pdf', badge: 'Security', targetExt: 'PDF' },
       { id: 'unlock_pdf', title: 'Unlock PDF', desc: 'Remove password protection and permissions', path: '/unlock_pdf', badge: 'Security', targetExt: 'PDF' },
+      { id: 'cyber_forensics', title: 'Cyber Forensics Investigator', desc: 'Inspect PDF streams, exploit objects, metadata & hashes', path: '/cyber_forensics', badge: 'Forensics', targetExt: 'REPORT' },
     ]
   },
 
@@ -75,6 +76,7 @@ const TOOL_ROUTING_MAP = {
         { id: 'rotate_image', title: 'Rotate Image', desc: 'Rotate orientation by 90°, 180°, or custom angle', path: '/rotate_image', badge: 'Edit', targetExt: ext.toUpperCase() },
         { id: 'grayscale_image', title: 'Grayscale Filter', desc: 'Apply clean black-and-white tonal mapping', path: '/grayscale_image', badge: 'Filter', targetExt: ext.toUpperCase() },
         { id: 'image_blur', title: 'Blur & Obscure', desc: 'Apply Gaussian blur to sensitive details', path: '/image_blur', badge: 'Filter', targetExt: ext.toUpperCase() },
+        { id: 'cyber_forensics', title: 'Cyber Forensics Investigator', desc: 'Inspect EXIF, GPS coordinates, camera model & tampering', path: '/cyber_forensics', badge: 'Forensics', targetExt: 'REPORT' },
         ...(isSvg ? [{ id: 'svg_to_png', title: 'SVG to PNG', desc: 'Rasterize vector graphics into high-res PNG', path: '/svg_to_png', badge: 'Convert', targetExt: 'PNG' }] : []),
         ...(isBmp ? [{ id: 'bmp_to_png', title: 'BMP to PNG', desc: 'Modernize uncompressed bitmap into web PNG', path: '/bmp_to_png', badge: 'Convert', targetExt: 'PNG' }] : []),
       ];
@@ -395,6 +397,7 @@ function resolveFileTools(file) {
     icon: HelpCircle,
     size,
     tools: [
+      { id: 'cyber_forensics', title: 'Cyber Forensics Investigator', desc: 'Inspect magic bytes, Shannon entropy, hashes & carved strings', path: '/cyber_forensics', badge: 'Forensics', targetExt: 'REPORT' },
       { id: 'hash_gen', title: 'Cryptographic Hash (SHA-256)', desc: 'Generate file integrity checksum hashes', path: '/hash_generator', badge: 'Security', targetExt: 'HASH' },
       { id: 'base64', title: 'Base64 Encoder/Decoder', desc: 'Translate raw bytes into safe base64 strings', path: '/base64_encode_decode', badge: 'Dev Tool', targetExt: 'TXT' },
       { id: 'bcrypt', title: 'Bcrypt Hash Generator', desc: 'Generate secure salted password hashes', path: '/bcrypt_generator', badge: 'Security', targetExt: 'HASH' },
